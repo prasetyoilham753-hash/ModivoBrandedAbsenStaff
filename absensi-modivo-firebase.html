@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Absensi — Modivo Branded</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-main:#080705;
+    --bg-card:#141210;
+    --card-border:#2b2717;
+    --gold:#cda75d;
+    --gold-light:#f2e0ac;
+    --gold-dim:#8a6f3a;
+    --gold-grad: linear-gradient(135deg, #f6e8bd 0%, #cda75d 50%, #8a6f3a 100%);
+    --silver:#d9d5c8;
+    --silver-dim:#9a9585;
+    --text:#ded8c8;
+    --text-muted:#8f8977;
+    --line:#26231a;
+    --a:#6f6f6f; --b:#2fa9d1; --c:#d1a92f; --d:#b03a8f;
+    --ok:#3c9d70; --ok-text:#82d8ab;
+    --danger:#b23a2e; --danger-text:#e79184;
+    --admin-gold:#ffd876;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background-color:var(--bg-main);
+    background-image:radial-gradient(ellipse at 50% -10%, #1c1810 0%, var(--bg-main) 60%);
+    background-attachment:fixed;
+    color:var(--text);
+    font-family:'Jost',Helvetica,Arial,sans-serif;
+  }
+  h1,h2{font-family:'Cormorant Garamond',Georgia,serif;}
+
+  /* ---------- HEADER ---------- */
+  header{
+    padding:48px 24px 36px;
+    text-align:center;
+    border-bottom:1px solid var(--card-border);
+    background:linear-gradient(180deg, rgba(20,17,10,.7) 0%, transparent 100%);
+  }
+  .logo-ring{
+    width:72px;height:72px;border-radius:50%;
+    border:2px solid var(--silver);
+    display:flex;align-items:center;justify-content:center;
+    margin:0 auto 14px;
+    font-family:'Cormorant Garamond',serif;font-size:38px;font-weight:500;
+    color:var(--silver);
+    background:radial-gradient(circle at 35% 30%, #201d14, #0c0c0d 75%);
+    box-shadow:inset 0 0 10px rgba(255,255,255,.05), 0 0 16px rgba(255,255,255,.05);
+  }
+  header h1{
+    margin:0;font-size:42px;font-weight:700;letter-spacing:7px;text-transform:uppercase;
+    background:var(--gold-grad);-webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  header .sub{
+    font-size:12px;letter-spacing:6px;color:var(--silver-dim);margin-top:8px;text-transform:uppercase;font-weight:300;
+  }
+  header p{margin:18px auto 0;color:var(--text-muted);font-size:13px;letter-spacing:.3px;max-width:480px;line-height:1.5;}
+
+  .wrap{max-width:1050px;margin:0 auto;padding:32px 20px;}
+  .card{
+    background:var(--bg-card);border:1px solid var(--card-border);border-radius:10px;
+    padding:26px;margin-bottom:26px;
+    box-shadow:0 12px 28px rgba(0,0,0,.5);
+    position:relative;overflow:hidden;
+  }
+  .card::before{content:'';position:absolute;top:0;left:0;width:100%;height:3px;background:var(--gold-grad);}
+  .card::after{
+    content:'';position:absolute;top:18px;right:18px;width:36px;height:36px;
+    background-image:radial-gradient(var(--gold-dim) 1.5px, transparent 1.5px);
+    background-size:8px 8px;opacity:.25;pointer-events:none;
+  }
+  .card h2{
+    margin:0 0 20px;font-size:22px;font-weight:600;letter-spacing:1px;color:var(--gold-light);
+    text-transform:uppercase;padding-bottom:14px;border-bottom:1px solid var(--line);
+  }
+
+  .row{display:flex;gap:16px;flex-wrap:wrap;align-items:end;}
+  label{display:block;font-size:10.5px;letter-spacing:1.2px;text-transform:uppercase;color:var(--gold-dim);margin-bottom:6px;font-weight:500;}
+  select,input{
+    width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:5px;font-size:14px;min-width:160px;
+    font-family:'Jost',sans-serif;background:#1a1815;color:var(--text);transition:all .2s ease;
+  }
+  select:focus,input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 6px rgba(205,167,93,.2);background:#1e1c17;}
+  .readonly-field{
+    padding:10px 12px;border:1px solid var(--line);border-radius:5px;font-size:14px;
+    background:#100f0c;color:var(--gold-light);min-width:200px;letter-spacing:.5px;
+  }
+
+  button{
+    cursor:pointer;border:none;border-radius:5px;padding:10px 20px;font-size:12.5px;font-weight:600;
+    letter-spacing:1px;text-transform:uppercase;font-family:'Jost',sans-serif;transition:all .15s ease;
+  }
+  button:hover{filter:brightness(1.1);transform:translateY(-1px);}
+  button:active{transform:translateY(0);}
+  .btn-in{background:var(--gold-grad);color:#141008;box-shadow:0 3px 12px rgba(205,167,93,.25);}
+  .btn-export{background:transparent;color:var(--gold-light);border:1px solid var(--gold-dim);}
+  .btn-export:hover{background:rgba(205,167,93,.1);}
+  .btn-link{background:none;color:var(--gold-dim);text-decoration:underline;padding:4px 0;font-weight:500;text-transform:none;letter-spacing:.3px;}
+  .btn-link:hover{color:var(--gold-light);transform:none;}
+  .btn-danger{background:var(--danger);color:#f4e9e6;}
+  .btn-danger:hover{box-shadow:0 3px 12px rgba(178,58,46,.35);}
+  .btn-ghost{background:#1c1a15;color:var(--text-muted);border:1px solid var(--line);}
+  .btn-ghost:hover{border-color:var(--text);color:var(--text);}
+  button:disabled{background:#242320;color:#5a5648;cursor:not-allowed;}
+
+  .status-box{margin-top:16px;padding:12px 16px;border-radius:5px;font-size:13.5px;display:none;border-left:3px solid transparent;}
+  .status-ok{background:rgba(60,157,112,.12);color:var(--ok-text);border-left-color:var(--ok);display:block;}
+  .status-warn{background:rgba(178,58,46,.12);color:var(--danger-text);border-left-color:var(--danger);display:block;}
+
+  .shift-pill{display:inline-block;padding:3px 10px;border-radius:20px;font-weight:700;font-size:10.5px;color:#fff;text-transform:uppercase;letter-spacing:.5px;}
+  .shift-pill.A{background:var(--a);} .shift-pill.B{background:var(--b);}
+  .shift-pill.C{background:var(--c);color:#241d00;} .shift-pill.D{background:var(--d);}
+
+  .schedule-scroll{overflow-x:auto;padding-bottom:8px;}
+  table{border-collapse:collapse;width:100%;font-size:13px;min-width:600px;}
+  th,td{border:1px solid var(--line);padding:9px 8px;text-align:center;color:var(--text);}
+  th{background:#17150f;color:var(--gold-light);font-weight:500;letter-spacing:.5px;text-transform:uppercase;font-size:11px;}
+  tr:hover td{background:rgba(255,255,255,.02);}
+  td.name{text-align:left;font-weight:500;color:var(--silver);background:#141210;}
+  .name-admin{color:var(--admin-gold) !important;font-weight:700;text-shadow:0 0 8px rgba(255,216,118,.4);}
+
+  .hadir{color:var(--ok-text);font-weight:500;}
+  .isOff{color:#565248;}
+
+  .filters{display:flex;gap:12px;margin-bottom:18px;flex-wrap:wrap;align-items:center;}
+  .empty{color:var(--text-muted);font-style:italic;padding:16px 0;text-align:center;}
+  .note{font-size:12.5px;color:var(--text-muted);margin-top:14px;line-height:1.6;}
+  .divider{border:none;border-top:1px solid var(--line);margin:20px 0;}
+
+  .summary{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:22px;}
+  .summary .box{
+    background:#100f0c;border:1px solid var(--card-border);border-radius:7px;padding:18px;
+    min-width:130px;text-align:center;flex:1;position:relative;overflow:hidden;
+  }
+  .summary .box::before{content:'';position:absolute;left:0;top:0;width:3px;height:100%;background:var(--gold-dim);}
+  .summary .box .num{font-size:32px;font-weight:700;font-family:'Cormorant Garamond',serif;color:var(--gold-light);text-shadow:0 0 8px rgba(205,167,93,.2);}
+  .summary .box .lbl{font-size:10.5px;color:var(--text-muted);margin-top:6px;letter-spacing:1px;text-transform:uppercase;}
+
+  .edit-input{width:100px;padding:7px 8px;font-size:12.5px;min-width:auto;}
+  .hidden{display:none !important;}
+
+  /* ---------- KALENDER (KALKULATOR RENTANG TANGGAL) ---------- */
+  .calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:18px;}
+  .cal-dow{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--gold-dim);text-align:center;padding-bottom:2px;}
+  .cal-cell{
+    aspect-ratio:1/1;border-radius:6px;border:1px solid var(--line);background:#100f0c;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+    font-size:11px;color:var(--text-muted);
+  }
+  .cal-cell.cal-pad{border:none;background:transparent;}
+  .cal-cell.cal-hadir{background:rgba(60,157,112,.14);border-color:rgba(60,157,112,.4);color:var(--ok-text);font-weight:600;}
+  .cal-daynum{font-size:12px;}
+  .cal-shift{padding:1px 6px;font-size:8px;}
+
+  /* ---------- SEL REKAP YANG BISA DIUBAH ADMIN ---------- */
+  .att-cell{cursor:pointer;}
+  .att-cell:hover{background:rgba(205,167,93,.18) !important;}
+
+  /* ---------- MODAL EDIT STATUS ---------- */
+  .modal-overlay{
+    position:fixed;inset:0;background:rgba(0,0,0,.72);
+    display:flex;align-items:center;justify-content:center;
+    z-index:999;padding:20px;
+  }
+  .modal-overlay.hidden{display:none !important;}
+  .modal-box{
+    background:var(--bg-card);border:1px solid var(--card-border);border-radius:10px;
+    padding:24px;max-width:340px;width:100%;box-shadow:0 20px 50px rgba(0,0,0,.6);
+    position:relative;
+  }
+  .modal-box::before{content:'';position:absolute;top:0;left:0;width:100%;height:3px;background:var(--gold-grad);}
+  .modal-box h3{margin:0 0 6px;font-size:20px;color:var(--gold-light);font-family:'Cormorant Garamond',serif;}
+  .modal-options{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px;}
+  .modal-opt{
+    padding:16px 8px;border-radius:6px;border:none;cursor:pointer;
+    font-weight:700;font-size:13px;letter-spacing:.5px;text-transform:uppercase;color:#fff;
+    transition:transform .1s ease, filter .15s ease;
+  }
+  .modal-opt:hover{filter:brightness(1.15);transform:translateY(-1px);}
+  .modal-opt.off{background:#2a2620;color:var(--text-muted);border:1px solid var(--line);}
+  .modal-opt.A{background:var(--a);}
+  .modal-opt.B{background:var(--b);}
+  .modal-opt.C{background:var(--c);color:#241d00;}
+  .modal-opt.D{background:var(--d);}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-ring">M</div>
+  <h1>MODIVO</h1>
+  <div class="sub">Branded Attendance System</div>
+  <p>Tanggal &amp; jam diambil otomatis dari sistem saat absen · tidak bisa diisi manual</p>
+</header>
+
+<div class="wrap">
+
+  <!-- ABSEN -->
+  <div class="card">
+    <h2>Absen Hari Ini</h2>
+    <div class="row">
+      <div style="flex:1;">
+        <label>Pilih Nama</label>
+        <select id="hostSelect"></select>
+      </div>
+      <div style="flex:1;">
+        <label>Tanggal &amp; Jam (Otomatis)</label>
+        <div class="readonly-field" id="clockDisplay">—</div>
+      </div>
+      <div style="flex:1;">
+        <label>Shift (Opsional)</label>
+        <select id="shiftSelect">
+          <option value="">-</option>
+          <option value="A">A · Subuh</option>
+          <option value="B">B · Pagi</option>
+          <option value="C">C · Siang</option>
+          <option value="D">D · Malam</option>
+        </select>
+      </div>
+      <div>
+        <button class="btn-in" id="btnMasuk" style="height:43px;">Absen Masuk (Hadir)</button>
+      </div>
+    </div>
+    <div class="status-box" id="statusBox"></div>
+  </div>
+
+  <!-- REKAP UNTUK HOST -->
+  <div class="card">
+    <h2>Rekap Absen Saya</h2>
+    <p class="note" style="margin-top:0;margin-bottom:20px;">Cek apakah absen kamu bulan ini sudah tercatat sesuai jadwal.</p>
+    <div class="row" style="margin-bottom:20px;">
+      <div style="flex:1;">
+        <label>Nama</label>
+        <select id="hostRekapSelect"></select>
+      </div>
+      <div style="flex:1;">
+        <label>Bulan</label>
+        <select id="hostMonthPicker"></select>
+      </div>
+    </div>
+    <div class="summary" id="hostSummaryBox"></div>
+    <div class="schedule-scroll">
+      <table id="hostRekapTable"></table>
+    </div>
+    <p class="note">Riwayat bulan-bulan sebelumnya hanya bisa dilihat oleh admin. Tampilan ini terkunci pada bulan berjalan.</p>
+  </div>
+
+  <!-- LOGIN ADMIN -->
+  <div class="card" id="loginCard">
+    <h2>Login Admin</h2>
+    <div class="row">
+      <div style="flex:1;">
+        <label>Username</label>
+        <input type="text" id="loginUser" placeholder="username">
+      </div>
+      <div style="flex:1;">
+        <label>Password</label>
+        <input type="password" id="loginPass" placeholder="password">
+      </div>
+      <div>
+        <button class="btn-in" id="btnLogin" style="height:43px;">Masuk</button>
+      </div>
+    </div>
+    <div class="status-box" id="loginStatus"></div>
+    <div style="margin-top:12px;">
+      <button class="btn-link" id="toggleChangePass">Ubah Sandi Admin</button>
+    </div>
+
+    <div id="changePassBox" class="hidden">
+      <hr class="divider">
+      <div class="row">
+        <div style="flex:1;">
+          <label>Kode Pengubah Sandi</label>
+          <input type="text" id="resetCodeInput" placeholder="kode">
+        </div>
+        <div style="flex:1;">
+          <label>Sandi Baru</label>
+          <input type="password" id="newPassInput" placeholder="sandi baru">
+        </div>
+        <div style="flex:1;">
+          <label>Ulangi Sandi Baru</label>
+          <input type="password" id="newPassInput2" placeholder="ulangi sandi baru">
+        </div>
+        <div>
+          <button class="btn-in" id="btnSavePass" style="height:43px;">Simpan Sandi Baru</button>
+        </div>
+      </div>
+      <div class="status-box" id="changePassStatus"></div>
+    </div>
+  </div>
+
+  <!-- DASHBOARD ADMIN -->
+  <div id="adminDashboard" style="display:none;">
+
+    <div style="text-align:right;margin-bottom:14px;">
+      <button class="btn-ghost" id="btnLogout">Logout</button>
+    </div>
+
+    <!-- REKAP BULANAN -->
+    <div class="card">
+      <h2>Rekap Bulanan — Hadir / OFF</h2>
+      <p class="note" style="margin-top:0;margin-bottom:20px;">
+        Tanggal yang tidak diisi absen otomatis dihitung <b>OFF</b>. Pilih bulan untuk melihat riwayat bulan sebelumnya.
+      </p>
+      <div class="row" style="margin-bottom:20px;">
+        <div style="flex:1;max-width:280px;">
+          <label>Bulan</label>
+          <select id="adminMonthPicker"></select>
+        </div>
+      </div>
+      <div class="summary" id="summaryBox"></div>
+      <div class="schedule-scroll">
+        <table id="monthTable"></table>
+      </div>
+    </div>
+
+    <!-- KALKULATOR RENTANG TANGGAL -->
+    <div class="card">
+      <h2>Kalkulator Total Masuk — Rentang Tanggal</h2>
+      <p class="note" style="margin-top:0;margin-bottom:20px;">
+        Hitung total kehadiran per host untuk periode tertentu — berguna karena tanggal gajian tiap host berbeda-beda.
+        Pilih satu nama untuk lihat rincian per shift, atau pilih "Semua Host" untuk perbandingan total sekaligus.
+      </p>
+      <div class="row" style="margin-bottom:20px;">
+        <div style="flex:1;">
+          <label>Nama</label>
+          <select id="rangeName"></select>
+        </div>
+        <div style="flex:1;">
+          <label>Dari Tanggal</label>
+          <input type="date" id="rangeStart">
+        </div>
+        <div style="flex:1;">
+          <label>Sampai Tanggal</label>
+          <input type="date" id="rangeEnd">
+        </div>
+        <div>
+          <button class="btn-in" id="btnHitungRange" style="height:43px;">Hitung Total</button>
+        </div>
+      </div>
+      <div class="status-box" id="rangeStatus"></div>
+      <div class="summary" id="rangeResultBox" style="display:none;"></div>
+      <div id="rangeShiftBreakdown" style="margin-bottom:6px;"></div>
+      <div id="rangeCalendarWrap"></div>
+      <div class="schedule-scroll hidden" id="rangeAllTableWrap">
+        <table id="rangeAllTable"></table>
+      </div>
+    </div>
+
+    <!-- MENU EDIT ABSENSI ADMIN -->
+    <div class="card">
+      <h2>Menu Edit Absensi</h2>
+      <p class="note" style="margin-top:0;margin-bottom:20px;">
+        Tambahkan data absen secara manual (untuk mengoreksi jika ada host yang lupa absen), atau edit/hapus data
+        yang salah di tabel Detail Absensi di bawah.
+      </p>
+      <div class="row">
+        <div style="flex:1;">
+          <label>Nama</label>
+          <select id="manualName"></select>
+        </div>
+        <div style="flex:1;">
+          <label>Tanggal</label>
+          <input type="date" id="manualDate">
+        </div>
+        <div style="flex:1;">
+          <label>Shift</label>
+          <select id="manualShift">
+            <option value="">-</option>
+            <option value="A">A · Subuh</option>
+            <option value="B">B · Pagi</option>
+            <option value="C">C · Siang</option>
+            <option value="D">D · Malam</option>
+          </select>
+        </div>
+        <div style="flex:1;">
+          <label>Jam Absen</label>
+          <input type="text" id="manualTime" placeholder="cth. 08:05:00">
+        </div>
+        <div>
+          <button class="btn-in" id="btnManualAdd" style="height:43px;">Tambah Data</button>
+        </div>
+      </div>
+      <div class="status-box" id="manualStatus"></div>
+    </div>
+
+    <!-- LOG DETAIL -->
+    <div class="card">
+      <h2>Detail Absensi (Bisa Diedit)</h2>
+      <div class="filters">
+        <select id="filterHost" style="max-width:200px;"><option value="">Semua Nama</option></select>
+        <button class="btn-export" id="btnExport">Download Excel (.xlsx)</button>
+        <button class="btn-ghost" id="btnReset" style="margin-left:auto;color:var(--danger-text);border-color:var(--danger);">Hapus Semua Data</button>
+      </div>
+      <div class="schedule-scroll">
+        <table id="logTable">
+          <thead><tr><th>Nama</th><th>Tanggal</th><th>Shift</th><th>Jam Absen</th><th>Aksi</th></tr></thead>
+          <tbody id="logBody"></tbody>
+        </table>
+      </div>
+      <div class="empty" id="emptyMsg">Belum ada data absen.</div>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- MODAL EDIT STATUS ABSENSI (ADMIN) -->
+<div class="modal-overlay hidden" id="cellEditModal">
+  <div class="modal-box">
+    <h3 id="cellEditTitle">Ubah Status</h3>
+    <p class="note" id="cellEditSub" style="margin-top:0;">Pilih status baru</p>
+    <div class="modal-options">
+      <button type="button" class="modal-opt off" data-val="">OFF</button>
+      <button type="button" class="modal-opt A" data-val="A">A</button>
+      <button type="button" class="modal-opt B" data-val="B">B</button>
+      <button type="button" class="modal-opt C" data-val="C">C</button>
+      <button type="button" class="modal-opt D" data-val="D">D</button>
+    </div>
+    <button class="btn-link" id="btnCancelCellEdit" style="margin-top:16px;">Batal</button>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script type="module">
+// ---------- FIREBASE SETUP ----------
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  getFirestore, doc, getDoc, setDoc, onSnapshot
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCuYFn_ryKoowVwNCe9Ar9ElRn7jYCEIUQ",
+  authDomain: "absensi-modivo.firebaseapp.com",
+  projectId: "absensi-modivo",
+  storageBucket: "absensi-modivo.firebasestorage.app",
+  messagingSenderId: "549570402579",
+  appId: "1:549570402579:web:c8ae75838cbc51092fa2e6"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const LOG_DOC = doc(db, 'absensi', 'log');
+const SETTINGS_DOC = doc(db, 'absensi', 'settings');
+
+const HOSTS = ['Ali','Mala','Sisil','Amat'];
+const ADMIN_NAME = 'Bintang (admin)';
+const NAMES = [...HOSTS, ADMIN_NAME];
+const RESET_CODE = '753177';
+const DEFAULT_ADMIN_PASS = 'overbored7';
+const ADMIN_USER = 'karamazov';
+const BULAN_ID = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+
+// ---------- STORAGE: LOG ABSENSI (Firestore) ----------
+async function getLog(){
+  try{
+    const snap = await getDoc(LOG_DOC);
+    return snap.exists() ? (snap.data().entries || []) : [];
+  }catch(e){
+    console.error('Gagal mengambil data absensi dari Firebase:', e);
+    alert('Gagal terhubung ke database. Cek koneksi internet, lalu muat ulang halaman.');
+    return [];
+  }
+}
+async function saveLog(log){
+  try{
+    await setDoc(LOG_DOC, { entries: log });
+  }catch(e){
+    console.error('Gagal menyimpan data absensi ke Firebase:', e);
+    alert('Gagal menyimpan data ke database. Cek koneksi internet lalu coba lagi.');
+  }
+}
+
+// ---------- STORAGE: PASSWORD ADMIN (Firestore) ----------
+async function getAdminPass(){
+  try{
+    const snap = await getDoc(SETTINGS_DOC);
+    return (snap.exists() && snap.data().adminPass) ? snap.data().adminPass : DEFAULT_ADMIN_PASS;
+  }catch(e){
+    console.error('Gagal mengambil password admin dari Firebase:', e);
+    return DEFAULT_ADMIN_PASS;
+  }
+}
+async function setAdminPass(newPass){
+  try{
+    await setDoc(SETTINGS_DOC, { adminPass: newPass }, { merge: true });
+  }catch(e){
+    console.error('Gagal menyimpan password admin ke Firebase:', e);
+    alert('Gagal menyimpan sandi baru ke database.');
+  }
+}
+
+// ---------- SINKRON REAL-TIME ANTAR STAFF ----------
+// Setiap ada perubahan data absensi di Firebase (dari staff manapun),
+// tampilan di layar ini otomatis ikut diperbarui tanpa perlu refresh.
+onSnapshot(LOG_DOC, ()=>{
+  if(typeof renderPublicRekap === 'function') renderPublicRekap();
+  if(document.getElementById('adminDashboard') &&
+     document.getElementById('adminDashboard').style.display !== 'none' &&
+     typeof renderAdmin === 'function') renderAdmin();
+});
+
+// ---------- WAKTU LOKAL ----------
+function todayStr(d = new Date()){
+  const y = d.getFullYear();
+  const m = String(d.getMonth()+1).padStart(2,'0');
+  const day = String(d.getDate()).padStart(2,'0');
+  return `${y}-${m}-${day}`;
+}
+function nowTimeStr(){
+  return new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+}
+
+// ---------- DAFTAR BULAN UNTUK PICKER (count bulan terakhir s.d. bulan ini) ----------
+function buildMonthOptionsHtml(count = 12){
+  const now = new Date();
+  let html = '';
+  for(let i=0;i<count;i++){
+    const d = new Date(now.getFullYear(), now.getMonth()-i, 1);
+    const y = d.getFullYear(), m = d.getMonth();
+    const value = `${y}-${String(m+1).padStart(2,'0')}`;
+    html += `<option value="${value}">${BULAN_ID[m]} ${y}</option>`;
+  }
+  return html;
+}
+function datesForMonth(value){ // value = "YYYY-MM"
+  const [y,m] = value.split('-').map(Number);
+  const totalDays = new Date(y, m, 0).getDate();
+  const dates = [];
+  for(let d=1; d<=totalDays; d++){ dates.push(todayStr(new Date(y, m-1, d))); }
+  return dates;
+}
+function datesInRange(startStr, endStr){ // inclusive, "YYYY-MM-DD"
+  const dates = [];
+  let d = new Date(startStr+'T00:00:00');
+  const end = new Date(endStr+'T00:00:00');
+  while(d <= end){
+    dates.push(todayStr(d));
+    d.setDate(d.getDate()+1);
+  }
+  return dates;
+}
+
+// ---------- HELPER: TAMPILAN KALENDER ----------
+const WEEKDAYS_ID = ['Min','Sen','Sel','Rab','Kam','Jum','Sab'];
+function calendarHtml(dates, recMap){
+  if(!dates.length) return '';
+  const firstDow = new Date(dates[0]+'T00:00:00').getDay();
+  const lastDow = new Date(dates[dates.length-1]+'T00:00:00').getDay();
+
+  let cells = '';
+  for(let i=0;i<firstDow;i++) cells += `<div class="cal-cell cal-pad"></div>`;
+  dates.forEach(d=>{
+    const rec = recMap[d];
+    const day = d.split('-')[2];
+    if(rec){
+      const pill = rec.shift ? `<div class="cal-shift shift-pill ${rec.shift}">${rec.shift}</div>` : '';
+      cells += `<div class="cal-cell cal-hadir"><div class="cal-daynum">${day}</div>${pill}</div>`;
+    }else{
+      cells += `<div class="cal-cell cal-off"><div class="cal-daynum">${day}</div></div>`;
+    }
+  });
+  for(let i=0;i<6-lastDow;i++) cells += `<div class="cal-cell cal-pad"></div>`;
+
+  return `<div class="calendar-grid">
+    ${WEEKDAYS_ID.map(w=>`<div class="cal-dow">${w}</div>`).join('')}
+    ${cells}
+  </div>`;
+}
+
+// ---------- HELPER: TAMPILAN NAMA ADMIN MENCOLOK ----------
+function isAdminName(n){ return n === ADMIN_NAME; }
+function optionLabel(n){ return isAdminName(n) ? '★ ' + n : n; }
+function optionHtml(n, selected){
+  const style = isAdminName(n) ? ' style="color:#ffd876;font-weight:700;"' : '';
+  const sel = selected ? ' selected' : '';
+  return `<option value="${n}"${style}${sel}>${optionLabel(n)}</option>`;
+}
+function nameCellHtml(n){
+  return isAdminName(n) ? `<span class="name-admin">★ ${n}</span>` : n;
+}
+
+// ---------- SETUP DROPDOWN ----------
+const hostSelect = document.getElementById('hostSelect');
+const hostRekapSelect = document.getElementById('hostRekapSelect');
+const filterHost = document.getElementById('filterHost');
+const manualName = document.getElementById('manualName');
+const rangeName = document.getElementById('rangeName');
+
+NAMES.forEach(n=>{
+  const opt = optionHtml(n);
+  hostSelect.innerHTML += opt;
+  hostRekapSelect.innerHTML += opt;
+  filterHost.innerHTML += opt;
+  manualName.innerHTML += opt;
+  rangeName.innerHTML += opt;
+});
+rangeName.innerHTML = `<option value="__ALL__">Semua Host</option>` + rangeName.innerHTML;
+
+document.getElementById('manualDate').value = todayStr();
+
+const hostMonthPicker = document.getElementById('hostMonthPicker');
+const adminMonthPicker = document.getElementById('adminMonthPicker');
+hostMonthPicker.innerHTML = buildMonthOptionsHtml(1); // host: hanya bulan berjalan
+hostMonthPicker.disabled = true;
+adminMonthPicker.innerHTML = buildMonthOptionsHtml(12); // admin: riwayat 12 bulan
+
+function tickClock(){
+  const now = new Date();
+  document.getElementById('clockDisplay').textContent = `${todayStr(now)} — ${now.toLocaleTimeString('id-ID')}`;
+}
+tickClock();
+setInterval(tickClock, 1000);
+
+function showStatus(elId, msg, ok){
+  const box = document.getElementById(elId);
+  box.textContent = msg;
+  box.className = 'status-box ' + (ok ? 'status-ok' : 'status-warn');
+}
+
+// ---------- ABSEN MASUK ----------
+document.getElementById('btnMasuk').addEventListener('click', async ()=>{
+  const name = hostSelect.value;
+  const shift = document.getElementById('shiftSelect').value;
+  const now = new Date();
+  const date = todayStr(now);
+  const jamAbsen = nowTimeStr();
+
+  const log = await getLog();
+  const existing = log.find(r=>r.name===name && r.date===date);
+  if(existing){
+    showStatus('statusBox', `${name} sudah tercatat hadir hari ini (${date}, pukul ${existing.jamAbsen}).`, false);
+    return;
+  }
+
+  log.push({ id: Date.now()+Math.random(), name, date, shift, jamAbsen });
+  await saveLog(log);
+
+  showStatus('statusBox', `Absen tercatat: ${name}, ${date}, pukul ${jamAbsen}.`, true);
+  renderPublicRekap();
+  if(document.getElementById('adminDashboard').style.display !== 'none') renderAdmin();
+});
+
+// ---------- MENU EDIT ABSENSI: TAMBAH MANUAL ----------
+document.getElementById('btnManualAdd').addEventListener('click', async ()=>{
+  const name = manualName.value;
+  const date = document.getElementById('manualDate').value;
+  const shift = document.getElementById('manualShift').value;
+  const jamAbsen = document.getElementById('manualTime').value.trim() || '-';
+
+  if(!date){ showStatus('manualStatus','Pilih tanggal dulu.', false); return; }
+
+  const log = await getLog();
+  const existing = log.find(r=>r.name===name && r.date===date);
+  if(existing){
+    showStatus('manualStatus', `${name} sudah punya data pada ${date}. Edit langsung di tabel di bawah kalau mau ubah.`, false);
+    return;
+  }
+  log.push({ id: Date.now()+Math.random(), name, date, shift, jamAbsen });
+  await saveLog(log);
+  showStatus('manualStatus', `Data manual ditambahkan: ${name}, ${date}.`, true);
+  renderAdmin();
+  renderPublicRekap();
+});
+
+// ---------- REKAP PUBLIK UNTUK HOST (dengan pilihan bulan) ----------
+async function renderPublicRekap(){
+  const log = await getLog();
+  const name = hostRekapSelect.value;
+  const dates = datesForMonth(hostMonthPicker.value);
+
+  let totalHadir = 0;
+  const cells = dates.map(d=>{
+    const rec = log.find(r=>r.name===name && r.date===d);
+    if(rec){
+      totalHadir++;
+      const pill = rec.shift ? `<span class="shift-pill ${rec.shift}">${rec.shift}</span>` : '';
+      return `<td class="hadir">Hadir ${pill}</td>`;
+    }
+    return `<td class="isOff">OFF</td>`;
+  }).join('');
+  const totalOff = dates.length - totalHadir;
+
+  document.getElementById('hostRekapTable').innerHTML =
+    '<tr><th>Tgl</th>' + dates.map(d=>`<th>${d.split('-')[2]}</th>`).join('') + '</tr>' +
+    '<tr><td class="name">Status</td>' + cells + '</tr>';
+
+  document.getElementById('hostSummaryBox').innerHTML = `
+    <div class="box"><div class="num">${totalHadir}</div><div class="lbl">Hadir</div></div>
+    <div class="box"><div class="num">${totalOff}</div><div class="lbl">OFF</div></div>`;
+}
+hostRekapSelect.addEventListener('change', renderPublicRekap);
+hostMonthPicker.addEventListener('change', renderPublicRekap);
+renderPublicRekap();
+
+// ---------- LOGIN ADMIN ----------
+document.getElementById('btnLogin').addEventListener('click', async ()=>{
+  const u = document.getElementById('loginUser').value.trim();
+  const p = document.getElementById('loginPass').value;
+  const currentPass = await getAdminPass();
+
+  if(u === ADMIN_USER && p === currentPass){
+    document.getElementById('loginCard').style.display = 'none';
+    document.getElementById('adminDashboard').style.display = 'block';
+    renderAdmin();
+  }else{
+    showStatus('loginStatus', 'Username atau password salah.', false);
+  }
+});
+
+document.getElementById('btnLogout').addEventListener('click', ()=>{
+  document.getElementById('adminDashboard').style.display = 'none';
+  document.getElementById('loginCard').style.display = 'block';
+  document.getElementById('loginUser').value = '';
+  document.getElementById('loginPass').value = '';
+});
+
+// ---------- UBAH SANDI ADMIN ----------
+document.getElementById('toggleChangePass').addEventListener('click', ()=>{
+  document.getElementById('changePassBox').classList.toggle('hidden');
+});
+
+document.getElementById('btnSavePass').addEventListener('click', async ()=>{
+  const code = document.getElementById('resetCodeInput').value.trim();
+  const p1 = document.getElementById('newPassInput').value;
+  const p2 = document.getElementById('newPassInput2').value;
+
+  if(code !== RESET_CODE){ showStatus('changePassStatus', 'Kode pengubah sandi salah.', false); return; }
+  if(!p1 || p1 !== p2){ showStatus('changePassStatus', 'Sandi baru tidak cocok atau kosong.', false); return; }
+
+  await setAdminPass(p1);
+  showStatus('changePassStatus', 'Sandi admin berhasil diubah. Silakan login dengan sandi baru.', true);
+  document.getElementById('resetCodeInput').value = '';
+  document.getElementById('newPassInput').value = '';
+  document.getElementById('newPassInput2').value = '';
+});
+
+// ---------- REKAP BULANAN ADMIN ----------
+function renderMonthTable(log){
+  const dates = datesForMonth(adminMonthPicker.value);
+  const table = document.getElementById('monthTable');
+
+  let totalHadirAll = 0;
+  const bodyRows = NAMES.map(n=>{
+    let rowHadir = 0;
+    const cells = dates.map(d=>{
+      const rec = log.find(r=>r.name===n && r.date===d);
+      if(rec){
+        rowHadir++;
+        const pill = rec.shift ? `<span class="shift-pill ${rec.shift}">${rec.shift}</span>` : '';
+        return `<td class="hadir att-cell" data-name="${n}" data-date="${d}" data-shift="${rec.shift||''}" title="Klik untuk ubah status">Hadir ${pill}</td>`;
+      }
+      return `<td class="isOff att-cell" data-name="${n}" data-date="${d}" data-shift="" title="Klik untuk ubah status">OFF</td>`;
+    }).join('');
+    totalHadirAll += rowHadir;
+    const cls = isAdminName(n) ? ' class="name name-admin"' : ' class="name"';
+    return `<tr><td${cls}>${nameCellHtml(n)}</td>${cells}</tr>`;
+  }).join('');
+
+  table.innerHTML =
+    '<tr><th>Nama</th>' + dates.map(d=>`<th>${d.split('-')[2]}</th>`).join('') + '</tr>' + bodyRows;
+
+  const totalPossible = NAMES.length * dates.length;
+  document.getElementById('summaryBox').innerHTML = `
+    <div class="box"><div class="num">${totalHadirAll}</div><div class="lbl">Total Hadir</div></div>
+    <div class="box"><div class="num">${totalPossible-totalHadirAll}</div><div class="lbl">Total OFF</div></div>
+    <div class="box"><div class="num">${NAMES.length}</div><div class="lbl">Jumlah Orang</div></div>`;
+}
+
+// ---------- MODAL EDIT STATUS: OFF / A / B / C / D (KLIK SEL REKAP BULANAN) ----------
+let editingCell = null; // { name, date }
+
+function openCellEditModal(name, date){
+  editingCell = { name, date };
+  document.getElementById('cellEditTitle').textContent = isAdminName(name) ? '★ ' + name : name;
+  document.getElementById('cellEditSub').textContent = `Tanggal ${date} — pilih status baru untuk hari ini`;
+  document.getElementById('cellEditModal').classList.remove('hidden');
+}
+function closeCellEditModal(){
+  editingCell = null;
+  document.getElementById('cellEditModal').classList.add('hidden');
+}
+
+document.getElementById('monthTable').addEventListener('click', (e)=>{
+  const cell = e.target.closest('.att-cell');
+  if(!cell) return;
+  openCellEditModal(cell.dataset.name, cell.dataset.date);
+});
+
+document.getElementById('btnCancelCellEdit').addEventListener('click', closeCellEditModal);
+document.getElementById('cellEditModal').addEventListener('click', (e)=>{
+  if(e.target.id === 'cellEditModal') closeCellEditModal();
+});
+
+document.querySelectorAll('.modal-opt').forEach(btn=>{
+  btn.addEventListener('click', async ()=>{
+    if(!editingCell) return;
+    const { name, date } = editingCell;
+    const val = btn.dataset.val; // '' = OFF, atau 'A'/'B'/'C'/'D'
+
+    let log = await getLog();
+    log = log.filter(r => !(r.name===name && r.date===date));
+    if(val){
+      log.push({ id: Date.now()+Math.random(), name, date, shift: val, jamAbsen: 'Diedit Admin' });
+    }
+    await saveLog(log);
+    closeCellEditModal();
+    renderAdmin();
+    renderPublicRekap();
+  });
+});
+
+// ---------- LOG DETAIL (EDITABLE) ----------
+function renderLogTable(log){
+  const filter = filterHost.value;
+  const filtered = filter ? log.filter(r=>r.name===filter) : log;
+  const sorted = [...filtered].sort((a,b)=> a.date===b.date ? a.name.localeCompare(b.name) : (a.date < b.date ? 1 : -1));
+
+  const logBody = document.getElementById('logBody');
+  document.getElementById('emptyMsg').style.display = sorted.length ? 'none' : 'block';
+
+  logBody.innerHTML = sorted.map(r=>{
+    const nameOptions = NAMES.map(n=>optionHtml(n, n===r.name)).join('');
+    const shiftOptions = ['','A','B','C','D'].map(s=>`<option value="${s}" ${s===(r.shift||'')?'selected':''}>${s||'-'}</option>`).join('');
+    return `<tr data-id="${r.id}">
+      <td>${isAdminName(r.name) ? '<select class="edit-input edit-name" style="color:#ffd876;font-weight:700;">' : '<select class="edit-input edit-name">'}${nameOptions}</select></td>
+      <td><input type="date" class="edit-input edit-date" value="${r.date}"></td>
+      <td><select class="edit-input edit-shift">${shiftOptions}</select></td>
+      <td><input type="text" class="edit-input edit-time" value="${r.jamAbsen}"></td>
+      <td>
+        <button class="btn-in edit-save" style="padding:6px 10px;font-size:10.5px;">Simpan</button>
+        <button class="btn-danger edit-del" style="padding:6px 10px;font-size:10.5px;">Hapus</button>
+      </td>
+    </tr>`;
+  }).join('');
+
+  logBody.querySelectorAll('.edit-save').forEach(btn=>{
+    btn.addEventListener('click', async (e)=>{
+      const tr = e.target.closest('tr');
+      const id = tr.dataset.id;
+      const log2 = await getLog();
+      const idx = log2.findIndex(r=>String(r.id)===id);
+      if(idx===-1) return;
+      log2[idx] = {
+        ...log2[idx],
+        name: tr.querySelector('.edit-name').value,
+        date: tr.querySelector('.edit-date').value,
+        shift: tr.querySelector('.edit-shift').value,
+        jamAbsen: tr.querySelector('.edit-time').value.trim() || '-'
+      };
+      await saveLog(log2);
+      renderAdmin();
+      renderPublicRekap();
+    });
+  });
+
+  logBody.querySelectorAll('.edit-del').forEach(btn=>{
+    btn.addEventListener('click', async (e)=>{
+      if(!confirm('Hapus data absen ini?')) return;
+      const tr = e.target.closest('tr');
+      const id = tr.dataset.id;
+      let log2 = await getLog();
+      log2 = log2.filter(r=>String(r.id)!==id);
+      await saveLog(log2);
+      renderAdmin();
+      renderPublicRekap();
+    });
+  });
+}
+
+async function renderAdmin(){
+  const log = await getLog();
+  renderMonthTable(log);
+  renderLogTable(log);
+}
+adminMonthPicker.addEventListener('change', renderAdmin);
+filterHost.addEventListener('change', renderAdmin);
+
+// ---------- KALKULATOR TOTAL MASUK: RENTANG TANGGAL ----------
+document.getElementById('btnHitungRange').addEventListener('click', async ()=>{
+  const name = rangeName.value;
+  const start = document.getElementById('rangeStart').value;
+  const end = document.getElementById('rangeEnd').value;
+
+  if(!start || !end){ showStatus('rangeStatus','Isi tanggal mulai dan tanggal akhir dulu.', false); return; }
+  if(start > end){ showStatus('rangeStatus','Tanggal mulai tidak boleh setelah tanggal akhir.', false); return; }
+
+  document.getElementById('rangeStatus').style.display = 'none';
+  const log = await getLog();
+  const dates = datesInRange(start, end);
+
+  if(name === '__ALL__'){
+    document.getElementById('rangeResultBox').style.display = 'none';
+    document.getElementById('rangeShiftBreakdown').innerHTML = '';
+    document.getElementById('rangeCalendarWrap').innerHTML =
+      '<p class="note" style="margin-top:0;">Tampilan kalender hanya tersedia saat memilih satu nama, bukan "Semua Host".</p>';
+
+    const rows = NAMES.map(n=>{
+      const total = log.filter(r=>r.name===n && dates.includes(r.date)).length;
+      const cls = isAdminName(n) ? ' class="name name-admin"' : ' class="name"';
+      return `<tr><td${cls}>${nameCellHtml(n)}</td><td>${total}</td><td>${dates.length-total}</td></tr>`;
+    }).join('');
+
+    document.getElementById('rangeAllTable').innerHTML =
+      `<tr><th>Nama</th><th>Total Hadir</th><th>Total OFF</th></tr>${rows}`;
+    document.getElementById('rangeAllTableWrap').classList.remove('hidden');
+  } else {
+    document.getElementById('rangeAllTableWrap').classList.add('hidden');
+
+    const recs = log.filter(r=>r.name===name && dates.includes(r.date));
+    const totalHadir = recs.length;
+    const totalHari = dates.length;
+    const totalOff = totalHari - totalHadir;
+
+    const perShift = {};
+    recs.forEach(r=>{ const k = r.shift || '-'; perShift[k] = (perShift[k]||0)+1; });
+    const shiftChips = Object.entries(perShift)
+      .filter(([k])=>k!=='-')
+      .map(([k,v])=>`<span class="shift-pill ${k}" style="margin-right:6px;">${k} · ${v}x</span>`).join('');
+
+    document.getElementById('rangeResultBox').style.display = 'flex';
+    document.getElementById('rangeResultBox').innerHTML = `
+      <div class="box"><div class="num">${totalHadir}</div><div class="lbl">Total Hadir</div></div>
+      <div class="box"><div class="num">${totalOff}</div><div class="lbl">Total OFF</div></div>
+      <div class="box"><div class="num">${totalHari}</div><div class="lbl">Total Hari</div></div>`;
+    document.getElementById('rangeShiftBreakdown').innerHTML = shiftChips ||
+      '<span style="color:var(--text-muted);font-size:12px;">Tidak ada data shift pada rentang ini.</span>';
+
+    const recMap = {};
+    recs.forEach(r=>{ recMap[r.date] = r; });
+    document.getElementById('rangeCalendarWrap').innerHTML = calendarHtml(dates, recMap);
+  }
+});
+
+// ---------- EXPORT KE EXCEL ----------
+document.getElementById('btnExport').addEventListener('click', async ()=>{
+  const log = await getLog();
+  const sorted = [...log].sort((a,b)=> a.date===b.date ? a.name.localeCompare(b.name) : (a.date < b.date ? -1 : 1));
+  const rows = sorted.map(r=>({ Nama: r.name, Tanggal: r.date, Shift: r.shift || '-', 'Jam Absen': r.jamAbsen }));
+  const ws = XLSX.utils.json_to_sheet(rows);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Absensi');
+  XLSX.writeFile(wb, `absensi-modivo-${todayStr()}.xlsx`);
+});
+
+// ---------- RESET SEMUA DATA ----------
+document.getElementById('btnReset').addEventListener('click', async ()=>{
+  const code = prompt('Masukkan kode keamanan untuk menghapus SEMUA data absensi:');
+  if(code === null) return;
+  if(code.trim() !== RESET_CODE){ alert('Kode salah. Data tidak dihapus.'); return; }
+  if(!confirm('Yakin ingin menghapus seluruh data absensi? Tindakan ini tidak bisa dibatalkan.')) return;
+  await saveLog([]);
+  renderAdmin();
+  renderPublicRekap();
+});
+</script>
+</body>
+</html>
