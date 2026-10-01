@@ -12,8 +12,8 @@
 <style>
   :root{
     --bg-main:#080705;
-    --bg-card:#141210;
-    --card-border:#2b2717;
+    --bg-card:rgba(20, 18, 16, 0.85);
+    --card-border:rgba(205, 167, 93, 0.35);
     --gold:#cda75d;
     --gold-light:#f2e0ac;
     --gold-dim:#8a6f3a;
@@ -31,20 +31,79 @@
   *{box-sizing:border-box;}
   body{
     margin:0;
-    background-color:var(--bg-main);
-    background-image:radial-gradient(ellipse at 50% -10%, #1c1810 0%, var(--bg-main) 60%);
-    background-attachment:fixed;
+    background-color:#080705;
     color:var(--text);
     font-family:'Jost',Helvetica,Arial,sans-serif;
+    min-height:100vh;
+    position:relative;
+    overflow-x:hidden;
   }
   h1,h2,h3{font-family:'Cormorant Garamond',Georgia,serif;}
 
+  /* ---------- BALATRO SHADER CANVAS BACKGROUND ---------- */
+  #balatro-canvas{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100vw;
+    height:100vh;
+    z-index:0;
+    pointer-events:none;
+    display:block;
+  }
+
+  /* ---------- APP LAYOUT OVERLAY ---------- */
+  .app-container{
+    position:relative;
+    z-index:1;
+  }
+
+  /* ---------- THEME SWITCHER BAR ---------- */
+  .theme-bar{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:8px;
+    padding:8px 16px;
+    background:rgba(10, 9, 8, 0.7);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid rgba(255,255,255,0.08);
+    font-size:11.5px;
+  }
+  .theme-btn{
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.15);
+    color:var(--text);
+    border-radius:20px;
+    padding:4px 12px;
+    font-size:11px;
+    cursor:pointer;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    transition:all 0.2s ease;
+  }
+  .theme-btn.active, .theme-btn:hover{
+    background:rgba(205,167,93,0.25);
+    border-color:var(--gold);
+    color:var(--gold-light);
+    transform:translateY(-1px);
+  }
+  .theme-dot{
+    width:8px;
+    height:8px;
+    border-radius:50%;
+    display:inline-block;
+  }
+
   /* ---------- HEADER ---------- */
   header{
-    padding:48px 24px 36px;
+    padding:36px 24px 28px;
     text-align:center;
     border-bottom:1px solid var(--card-border);
-    background:linear-gradient(180deg, rgba(20,17,10,.7) 0%, transparent 100%);
+    background:linear-gradient(180deg, rgba(20,17,10,.82) 0%, rgba(8,7,5,.4) 100%);
+    backdrop-filter:blur(12px);
+    -webkit-backdrop-filter:blur(12px);
   }
   .logo-ring{
     width:72px;height:72px;border-radius:50%;
@@ -67,9 +126,13 @@
 
   .wrap{max-width:1050px;margin:0 auto;padding:32px 20px;}
   .card{
-    background:var(--bg-card);border:1px solid var(--card-border);border-radius:10px;
+    background:var(--bg-card);
+    border:1px solid var(--card-border);
+    border-radius:10px;
     padding:26px;margin-bottom:26px;
-    box-shadow:0 12px 28px rgba(0,0,0,.5);
+    box-shadow:0 14px 35px rgba(0,0,0,.7);
+    backdrop-filter:blur(16px);
+    -webkit-backdrop-filter:blur(16px);
     position:relative;overflow:hidden;
   }
   .card::before{content:'';position:absolute;top:0;left:0;width:100%;height:3px;background:var(--gold-grad);}
@@ -87,12 +150,12 @@
   label{display:block;font-size:10.5px;letter-spacing:1.2px;text-transform:uppercase;color:var(--gold-dim);margin-bottom:6px;font-weight:500;}
   select,input{
     width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:5px;font-size:14px;min-width:160px;
-    font-family:'Jost',sans-serif;background:#1a1815;color:var(--text);transition:all .2s ease;
+    font-family:'Jost',sans-serif;background:rgba(26,24,21,0.9);color:var(--text);transition:all .2s ease;
   }
   select:focus,input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 6px rgba(205,167,93,.2);background:#1e1c17;}
   .readonly-field{
     padding:10px 12px;border:1px solid var(--line);border-radius:5px;font-size:14px;
-    background:#100f0c;color:var(--gold-light);min-width:200px;letter-spacing:.5px;
+    background:rgba(16,15,12,0.9);color:var(--gold-light);min-width:200px;letter-spacing:.5px;
   }
 
   button{
@@ -103,18 +166,18 @@
   button:active{transform:translateY(0);}
   .btn-in{background:var(--gold-grad);color:#141008;box-shadow:0 3px 12px rgba(205,167,93,.25);}
   .btn-export{background:transparent;color:var(--gold-light);border:1px solid var(--gold-dim);}
-  .btn-export:hover{background:rgba(205,167,93,.1);}
+  .btn-export:hover{background:rgba(205,167,93,.15);}
   .btn-link{background:none;color:var(--gold-dim);text-decoration:underline;padding:4px 0;font-weight:500;text-transform:none;letter-spacing:.3px;}
   .btn-link:hover{color:var(--gold-light);transform:none;}
   .btn-danger{background:var(--danger);color:#f4e9e6;}
   .btn-danger:hover{box-shadow:0 3px 12px rgba(178,58,46,.35);}
-  .btn-ghost{background:#1c1a15;color:var(--text-muted);border:1px solid var(--line);}
+  .btn-ghost{background:rgba(28,26,21,0.85);color:var(--text-muted);border:1px solid var(--line);}
   .btn-ghost:hover{border-color:var(--text);color:var(--text);}
   button:disabled{background:#242320;color:#5a5648;cursor:not-allowed;}
 
   .status-box{margin-top:16px;padding:12px 16px;border-radius:5px;font-size:13.5px;display:none;border-left:3px solid transparent;}
-  .status-ok{background:rgba(60,157,112,.12);color:var(--ok-text);border-left-color:var(--ok);display:block;}
-  .status-warn{background:rgba(178,58,46,.12);color:var(--danger-text);border-left-color:var(--danger);display:block;}
+  .status-ok{background:rgba(60,157,112,.15);color:var(--ok-text);border-left-color:var(--ok);display:block;}
+  .status-warn{background:rgba(178,58,46,.15);color:var(--danger-text);border-left-color:var(--danger);display:block;}
 
   .shift-pill{display:inline-block;padding:3px 10px;border-radius:20px;font-weight:700;font-size:10.5px;color:#fff;text-transform:uppercase;letter-spacing:.5px;}
   .shift-pill.A{background:var(--a);} .shift-pill.B{background:var(--b);}
@@ -123,9 +186,9 @@
   .schedule-scroll{overflow-x:auto;padding-bottom:8px;}
   table{border-collapse:collapse;width:100%;font-size:13px;min-width:600px;}
   th,td{border:1px solid var(--line);padding:9px 8px;text-align:center;color:var(--text);}
-  th{background:#17150f;color:var(--gold-light);font-weight:500;letter-spacing:.5px;text-transform:uppercase;font-size:11px;}
-  tr:hover td{background:rgba(255,255,255,.02);}
-  td.name{text-align:left;font-weight:500;color:var(--silver);background:#141210;}
+  th{background:rgba(23,21,15,0.9);color:var(--gold-light);font-weight:500;letter-spacing:.5px;text-transform:uppercase;font-size:11px;}
+  tr:hover td{background:rgba(255,255,255,.03);}
+  td.name{text-align:left;font-weight:500;color:var(--silver);background:rgba(20,18,16,0.95);}
   .name-admin{color:var(--admin-gold) !important;font-weight:700;text-shadow:0 0 8px rgba(255,216,118,.4);}
 
   .hadir{color:var(--ok-text);font-weight:500;}
@@ -138,8 +201,9 @@
 
   .summary{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:22px;}
   .summary .box{
-    background:#100f0c;border:1px solid var(--card-border);border-radius:7px;padding:18px;
+    background:rgba(16,15,12,.85);border:1px solid var(--card-border);border-radius:7px;padding:18px;
     min-width:130px;text-align:center;flex:1;position:relative;overflow:hidden;
+    backdrop-filter:blur(8px);
   }
   .summary .box::before{content:'';position:absolute;left:0;top:0;width:3px;height:100%;background:var(--gold-dim);}
   .summary .box .num{font-size:32px;font-weight:700;font-family:'Cormorant Garamond',serif;color:var(--gold-light);text-shadow:0 0 8px rgba(205,167,93,.2);}
@@ -152,30 +216,31 @@
   .calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:18px;}
   .cal-dow{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--gold-dim);text-align:center;padding-bottom:2px;}
   .cal-cell{
-    aspect-ratio:1/1;border-radius:6px;border:1px solid var(--line);background:#100f0c;
+    aspect-ratio:1/1;border-radius:6px;border:1px solid var(--line);background:rgba(16,15,12,0.9);
     display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
     font-size:11px;color:var(--text-muted);
   }
   .cal-cell.cal-pad{border:none;background:transparent;}
-  .cal-cell.cal-hadir{background:rgba(60,157,112,.14);border-color:rgba(60,157,112,.4);color:var(--ok-text);font-weight:600;}
-  .cal-cell.cal-off{background:#100f0c;color:var(--text-muted);}
+  .cal-cell.cal-hadir{background:rgba(60,157,112,.18);border-color:rgba(60,157,112,.5);color:var(--ok-text);font-weight:600;}
+  .cal-cell.cal-off{background:rgba(16,15,12,0.8);color:var(--text-muted);}
   .cal-daynum{font-size:12px;}
   .cal-shift{padding:1px 6px;font-size:8px;}
 
   /* ---------- SEL REKAP YANG BISA DIUBAH ADMIN ---------- */
   .att-cell{cursor:pointer;}
-  .att-cell:hover{background:rgba(205,167,93,.18) !important;}
+  .att-cell:hover{background:rgba(205,167,93,.22) !important;}
 
   /* ---------- MODALS ---------- */
   .modal-overlay{
     position:fixed;inset:0;background:rgba(0,0,0,.78);
     display:flex;align-items:center;justify-content:center;
-    z-index:999;padding:20px;backdrop-filter:blur(4px);
+    z-index:999;padding:20px;backdrop-filter:blur(8px);
+    -webkit-backdrop-filter:blur(8px);
   }
   .modal-overlay.hidden{display:none !important;}
   .modal-box{
-    background:var(--bg-card);border:1px solid var(--card-border);border-radius:10px;
-    padding:24px;max-width:420px;width:100%;box-shadow:0 20px 50px rgba(0,0,0,.8);
+    background:rgba(20, 18, 16, 0.96);border:1px solid var(--card-border);border-radius:10px;
+    padding:24px;max-width:420px;width:100%;box-shadow:0 20px 50px rgba(0,0,0,.85);
     position:relative;
   }
   .modal-box::before{content:'';position:absolute;top:0;left:0;width:100%;height:3px;background:var(--gold-grad);}
@@ -196,222 +261,56 @@
 </head>
 <body>
 
-<header>
-  <div class="logo-ring">M</div>
-  <h1>MODIVO</h1>
-  <div class="sub">Branded Attendance System</div>
-  <p>Tanggal &amp; jam diambil otomatis dari sistem saat absen · tidak bisa diisi manual</p>
-</header>
+<!-- BALATRO SHADER WEBGL CANVAS -->
+<canvas id="balatro-canvas"></canvas>
 
-<div class="wrap">
+<div class="app-container">
 
-  <!-- ABSEN -->
-  <div class="card">
-    <h2>Absen Hari Ini</h2>
-    <div class="row">
-      <div style="flex:1;">
-        <label>Pilih Nama</label>
-        <select id="hostSelect"></select>
-      </div>
-      <div style="flex:1;">
-        <label>Tanggal &amp; Jam (Otomatis)</label>
-        <div class="readonly-field" id="clockDisplay">—</div>
-      </div>
-      <div style="flex:1;">
-        <label>Shift (Opsional)</label>
-        <select id="shiftSelect">
-          <option value="">-</option>
-          <option value="A">A · Subuh</option>
-          <option value="B">B · Pagi</option>
-          <option value="C">C · Siang</option>
-          <option value="D">D · Malam</option>
-        </select>
-      </div>
-      <div>
-        <button class="btn-in" id="btnMasuk" style="height:43px;">Absen Masuk (Hadir)</button>
-      </div>
-    </div>
-    <div class="status-box" id="statusBox"></div>
+  <!-- THEME PRESET SWITCHER -->
+  <div class="theme-bar">
+    <span style="color:var(--gold-dim);font-weight:500;">Balatro Shader Style:</span>
+    <button type="button" class="theme-btn active" data-t="balatro">
+      <span class="theme-dot" style="background:linear-gradient(45deg, #DE443B, #006BB4);"></span>
+      Balatro Classic (Red/Blue)
+    </button>
+    <button type="button" class="theme-btn" data-t="gold">
+      <span class="theme-dot" style="background:linear-gradient(45deg, #d4af37, #704214);"></span>
+      Modivo Luxury Gold
+    </button>
+    <button type="button" class="theme-btn" data-t="amethyst">
+      <span class="theme-dot" style="background:linear-gradient(45deg, #8a2be2, #00ced1);"></span>
+      Cyber Velvet
+    </button>
+    <button type="button" class="theme-btn" data-t="emerald">
+      <span class="theme-dot" style="background:linear-gradient(45deg, #2e8b57, #1e3f20);"></span>
+      Emerald Noir
+    </button>
   </div>
 
-  <!-- REKAP UNTUK HOST -->
-  <div class="card">
-    <h2>Rekap Absen Saya</h2>
-    <p class="note" style="margin-top:0;margin-bottom:20px;">Cek apakah absen kamu bulan ini sudah tercatat sesuai jadwal.</p>
-    <div class="row" style="margin-bottom:20px;">
-      <div style="flex:1;">
-        <label>Nama</label>
-        <select id="hostRekapSelect"></select>
-      </div>
-      <div style="flex:1;">
-        <label>Bulan</label>
-        <select id="hostMonthPicker"></select>
-      </div>
-    </div>
-    <div class="summary" id="hostSummaryBox"></div>
-    <div class="schedule-scroll">
-      <table id="hostRekapTable"></table>
-    </div>
-    <p class="note">Riwayat bulan-bulan sebelumnya hanya bisa dilihat oleh admin. Tampilan ini terkunci pada bulan berjalan.</p>
-  </div>
+  <header>
+    <div class="logo-ring">M</div>
+    <h1>MODIVO</h1>
+    <div class="sub">Branded Attendance System</div>
+    <p>Tanggal &amp; jam diambil otomatis dari sistem saat absen · tidak bisa diisi manual</p>
+  </header>
 
-  <!-- LOGIN ADMIN -->
-  <div class="card" id="loginCard">
-    <h2>Login Admin</h2>
-    <div class="row">
-      <div style="flex:1;">
-        <label>Username</label>
-        <input type="text" id="loginUser" placeholder="username">
-      </div>
-      <div style="flex:1;">
-        <label>Password</label>
-        <input type="password" id="loginPass" placeholder="password">
-      </div>
-      <div>
-        <button class="btn-in" id="btnLogin" style="height:43px;">Masuk</button>
-      </div>
-    </div>
-    <div class="status-box" id="loginStatus"></div>
-    <div style="margin-top:12px;">
-      <button class="btn-link" id="toggleChangePass">Ubah Sandi Admin</button>
-    </div>
+  <div class="wrap">
 
-    <div id="changePassBox" class="hidden">
-      <hr class="divider">
+    <!-- ABSEN -->
+    <div class="card">
+      <h2>Absen Hari Ini</h2>
       <div class="row">
         <div style="flex:1;">
-          <label>Kode Pengubah Sandi</label>
-          <input type="text" id="resetCodeInput" placeholder="kode">
+          <label>Pilih Nama</label>
+          <select id="hostSelect"></select>
         </div>
         <div style="flex:1;">
-          <label>Sandi Baru</label>
-          <input type="password" id="newPassInput" placeholder="sandi baru">
+          <label>Tanggal &amp; Jam (Otomatis)</label>
+          <div class="readonly-field" id="clockDisplay">—</div>
         </div>
         <div style="flex:1;">
-          <label>Ulangi Sandi Baru</label>
-          <input type="password" id="newPassInput2" placeholder="ulangi sandi baru">
-        </div>
-        <div>
-          <button class="btn-in" id="btnSavePass" style="height:43px;">Simpan Sandi Baru</button>
-        </div>
-      </div>
-      <div class="status-box" id="changePassStatus"></div>
-    </div>
-  </div>
-
-  <!-- DASHBOARD ADMIN -->
-  <div id="adminDashboard" style="display:none;">
-
-    <div style="text-align:right;margin-bottom:14px;">
-      <button class="btn-ghost" id="btnLogout">Logout</button>
-    </div>
-
-    <!-- KELOLA NAMA HOST / STAFF -->
-    <div class="card">
-      <h2>Kelola Nama Host / Staff</h2>
-      <p class="note" style="margin-top:0;margin-bottom:20px;">
-        Tambah nama staff/host baru agar langsung muncul di pilihan absen, ubah nama, atau hapus nama yang sudah tidak aktif. Data tersinkron otomatis ke seluruh perangkat secara real-time.
-      </p>
-      <div class="row" style="margin-bottom:18px;">
-        <div style="flex:2;min-width:220px;">
-          <label>Nama Staff / Host Baru</label>
-          <input type="text" id="newHostNameInput" placeholder="Ketik nama staff baru...">
-        </div>
-        <div>
-          <button class="btn-in" id="btnAddHostName" style="height:43px;">+ Tambah Nama</button>
-        </div>
-      </div>
-      <div class="status-box" id="hostManageStatus"></div>
-
-      <div style="margin-top:20px;">
-        <label>Daftar Nama Staff Aktif</label>
-        <div class="schedule-scroll" style="margin-top:8px;">
-          <table id="hostListTable">
-            <thead>
-              <tr>
-                <th style="width:45px;">No</th>
-                <th style="text-align:left;">Nama Staff</th>
-                <th style="width:130px;">Peran</th>
-                <th style="width:130px;">Total Absensi</th>
-                <th style="width:170px;">Aksi</th>
-              </tr>
-            </thead>
-            <tbody id="hostListBody"></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <!-- REKAP BULANAN -->
-    <div class="card">
-      <h2>Rekap Bulanan — Hadir / OFF</h2>
-      <p class="note" style="margin-top:0;margin-bottom:20px;">
-        Tanggal yang tidak diisi absen otomatis dihitung <b>OFF</b>. Pilih bulan untuk melihat riwayat bulan sebelumnya.
-      </p>
-      <div class="row" style="margin-bottom:20px;">
-        <div style="flex:1;max-width:280px;">
-          <label>Bulan</label>
-          <select id="adminMonthPicker"></select>
-        </div>
-      </div>
-      <div class="summary" id="summaryBox"></div>
-      <div class="schedule-scroll">
-        <table id="monthTable"></table>
-      </div>
-    </div>
-
-    <!-- KALKULATOR RENTANG TANGGAL -->
-    <div class="card">
-      <h2>Kalkulator Total Masuk — Rentang Tanggal</h2>
-      <p class="note" style="margin-top:0;margin-bottom:20px;">
-        Hitung total kehadiran per host untuk periode tertentu — berguna karena tanggal gajian tiap host berbeda-beda.
-        Pilih satu nama untuk lihat rincian per shift, atau pilih "Semua Host" untuk perbandingan total sekaligus.
-      </p>
-      <div class="row" style="margin-bottom:20px;">
-        <div style="flex:1;">
-          <label>Nama</label>
-          <select id="rangeName"></select>
-        </div>
-        <div style="flex:1;">
-          <label>Dari Tanggal</label>
-          <input type="date" id="rangeStart">
-        </div>
-        <div style="flex:1;">
-          <label>Sampai Tanggal</label>
-          <input type="date" id="rangeEnd">
-        </div>
-        <div>
-          <button class="btn-in" id="btnHitungRange" style="height:43px;">Hitung Total</button>
-        </div>
-      </div>
-      <div class="status-box" id="rangeStatus"></div>
-      <div class="summary" id="rangeResultBox" style="display:none;"></div>
-      <div id="rangeShiftBreakdown" style="margin-bottom:6px;"></div>
-      <div id="rangeCalendarWrap"></div>
-      <div class="schedule-scroll hidden" id="rangeAllTableWrap">
-        <table id="rangeAllTable"></table>
-      </div>
-    </div>
-
-    <!-- MENU EDIT ABSENSI ADMIN -->
-    <div class="card">
-      <h2>Menu Edit Absensi</h2>
-      <p class="note" style="margin-top:0;margin-bottom:20px;">
-        Tambahkan data absen secara manual (untuk mengoreksi jika ada host yang lupa absen), atau edit/hapus data
-        yang salah di tabel Detail Absensi di bawah.
-      </p>
-      <div class="row">
-        <div style="flex:1;">
-          <label>Nama</label>
-          <select id="manualName"></select>
-        </div>
-        <div style="flex:1;">
-          <label>Tanggal</label>
-          <input type="date" id="manualDate">
-        </div>
-        <div style="flex:1;">
-          <label>Shift</label>
-          <select id="manualShift">
+          <label>Shift (Opsional)</label>
+          <select id="shiftSelect">
             <option value="">-</option>
             <option value="A">A · Subuh</option>
             <option value="B">B · Pagi</option>
@@ -419,32 +318,226 @@
             <option value="D">D · Malam</option>
           </select>
         </div>
-        <div style="flex:1;">
-          <label>Jam Absen</label>
-          <input type="text" id="manualTime" placeholder="cth. 08:05:00">
-        </div>
         <div>
-          <button class="btn-in" id="btnManualAdd" style="height:43px;">Tambah Data</button>
+          <button class="btn-in" id="btnMasuk" style="height:43px;">Absen Masuk (Hadir)</button>
         </div>
       </div>
-      <div class="status-box" id="manualStatus"></div>
+      <div class="status-box" id="statusBox"></div>
     </div>
 
-    <!-- LOG DETAIL -->
+    <!-- REKAP UNTUK HOST -->
     <div class="card">
-      <h2>Detail Absensi (Bisa Diedit)</h2>
-      <div class="filters">
-        <select id="filterHost" style="max-width:200px;"><option value="">Semua Nama</option></select>
-        <button class="btn-export" id="btnExport">Download Excel (.xlsx)</button>
-        <button class="btn-ghost" id="btnReset" style="margin-left:auto;color:var(--danger-text);border-color:var(--danger);">Hapus Semua Data</button>
+      <h2>Rekap Absen Saya</h2>
+      <p class="note" style="margin-top:0;margin-bottom:20px;">Cek apakah absen kamu bulan ini sudah tercatat sesuai jadwal.</p>
+      <div class="row" style="margin-bottom:20px;">
+        <div style="flex:1;">
+          <label>Nama</label>
+          <select id="hostRekapSelect"></select>
+        </div>
+        <div style="flex:1;">
+          <label>Bulan</label>
+          <select id="hostMonthPicker"></select>
+        </div>
       </div>
+      <div class="summary" id="hostSummaryBox"></div>
       <div class="schedule-scroll">
-        <table id="logTable">
-          <thead><tr><th>Nama</th><th>Tanggal</th><th>Shift</th><th>Jam Absen</th><th>Aksi</th></tr></thead>
-          <tbody id="logBody"></tbody>
-        </table>
+        <table id="hostRekapTable"></table>
       </div>
-      <div class="empty" id="emptyMsg">Belum ada data absen.</div>
+      <p class="note">Riwayat bulan-bulan sebelumnya hanya bisa dilihat oleh admin. Tampilan ini terkunci pada bulan berjalan.</p>
+    </div>
+
+    <!-- LOGIN ADMIN -->
+    <div class="card" id="loginCard">
+      <h2>Login Admin</h2>
+      <div class="row">
+        <div style="flex:1;">
+          <label>Username</label>
+          <input type="text" id="loginUser" placeholder="username">
+        </div>
+        <div style="flex:1;">
+          <label>Password</label>
+          <input type="password" id="loginPass" placeholder="password">
+        </div>
+        <div>
+          <button class="btn-in" id="btnLogin" style="height:43px;">Masuk</button>
+        </div>
+      </div>
+      <div class="status-box" id="loginStatus"></div>
+      <div style="margin-top:12px;">
+        <button class="btn-link" id="toggleChangePass">Ubah Sandi Admin</button>
+      </div>
+
+      <div id="changePassBox" class="hidden">
+        <hr class="divider">
+        <div class="row">
+          <div style="flex:1;">
+            <label>Kode Pengubah Sandi</label>
+            <input type="text" id="resetCodeInput" placeholder="kode">
+          </div>
+          <div style="flex:1;">
+            <label>Sandi Baru</label>
+            <input type="password" id="newPassInput" placeholder="sandi baru">
+          </div>
+          <div style="flex:1;">
+            <label>Ulangi Sandi Baru</label>
+            <input type="password" id="newPassInput2" placeholder="ulangi sandi baru">
+          </div>
+          <div>
+            <button class="btn-in" id="btnSavePass" style="height:43px;">Simpan Sandi Baru</button>
+          </div>
+        </div>
+        <div class="status-box" id="changePassStatus"></div>
+      </div>
+    </div>
+
+    <!-- DASHBOARD ADMIN -->
+    <div id="adminDashboard" style="display:none;">
+
+      <div style="text-align:right;margin-bottom:14px;">
+        <button class="btn-ghost" id="btnLogout">Logout</button>
+      </div>
+
+      <!-- KELOLA NAMA HOST / STAFF -->
+      <div class="card">
+        <h2>Kelola Nama Host / Staff</h2>
+        <p class="note" style="margin-top:0;margin-bottom:20px;">
+          Tambah nama staff/host baru agar langsung muncul di pilihan absen, ubah nama, atau hapus nama yang sudah tidak aktif. Data tersinkron otomatis ke seluruh perangkat secara real-time.
+        </p>
+        <div class="row" style="margin-bottom:18px;">
+          <div style="flex:2;min-width:220px;">
+            <label>Nama Staff / Host Baru</label>
+            <input type="text" id="newHostNameInput" placeholder="Ketik nama staff baru...">
+          </div>
+          <div>
+            <button class="btn-in" id="btnAddHostName" style="height:43px;">+ Tambah Nama</button>
+          </div>
+        </div>
+        <div class="status-box" id="hostManageStatus"></div>
+
+        <div style="margin-top:20px;">
+          <label>Daftar Nama Staff Aktif</label>
+          <div class="schedule-scroll" style="margin-top:8px;">
+            <table id="hostListTable">
+              <thead>
+                <tr>
+                  <th style="width:45px;">No</th>
+                  <th style="text-align:left;">Nama Staff</th>
+                  <th style="width:130px;">Peran</th>
+                  <th style="width:130px;">Total Absensi</th>
+                  <th style="width:170px;">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="hostListBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- REKAP BULANAN -->
+      <div class="card">
+        <h2>Rekap Bulanan — Hadir / OFF</h2>
+        <p class="note" style="margin-top:0;margin-bottom:20px;">
+          Tanggal yang tidak diisi absen otomatis dihitung <b>OFF</b>. Pilih bulan untuk melihat riwayat bulan sebelumnya.
+        </p>
+        <div class="row" style="margin-bottom:20px;">
+          <div style="flex:1;max-width:280px;">
+            <label>Bulan</label>
+            <select id="adminMonthPicker"></select>
+          </div>
+        </div>
+        <div class="summary" id="summaryBox"></div>
+        <div class="schedule-scroll">
+          <table id="monthTable"></table>
+        </div>
+      </div>
+
+      <!-- KALKULATOR RENTANG TANGGAL -->
+      <div class="card">
+        <h2>Kalkulator Total Masuk — Rentang Tanggal</h2>
+        <p class="note" style="margin-top:0;margin-bottom:20px;">
+          Hitung total kehadiran per host untuk periode tertentu — berguna karena tanggal gajian tiap host berbeda-beda.
+          Pilih satu nama untuk lihat rincian per shift, atau pilih "Semua Host" untuk perbandingan total sekaligus.
+        </p>
+        <div class="row" style="margin-bottom:20px;">
+          <div style="flex:1;">
+            <label>Nama</label>
+            <select id="rangeName"></select>
+          </div>
+          <div style="flex:1;">
+            <label>Dari Tanggal</label>
+            <input type="date" id="rangeStart">
+          </div>
+          <div style="flex:1;">
+            <label>Sampai Tanggal</label>
+            <input type="date" id="rangeEnd">
+          </div>
+          <div>
+            <button class="btn-in" id="btnHitungRange" style="height:43px;">Hitung Total</button>
+          </div>
+        </div>
+        <div class="status-box" id="rangeStatus"></div>
+        <div class="summary" id="rangeResultBox" style="display:none;"></div>
+        <div id="rangeShiftBreakdown" style="margin-bottom:6px;"></div>
+        <div id="rangeCalendarWrap"></div>
+        <div class="schedule-scroll hidden" id="rangeAllTableWrap">
+          <table id="rangeAllTable"></table>
+        </div>
+      </div>
+
+      <!-- MENU EDIT ABSENSI ADMIN -->
+      <div class="card">
+        <h2>Menu Edit Absensi</h2>
+        <p class="note" style="margin-top:0;margin-bottom:20px;">
+          Tambahkan data absen secara manual (untuk mengoreksi jika ada host yang lupa absen), atau edit/hapus data
+          yang salah di tabel Detail Absensi di bawah.
+        </p>
+        <div class="row">
+          <div style="flex:1;">
+            <label>Nama</label>
+            <select id="manualName"></select>
+          </div>
+          <div style="flex:1;">
+            <label>Tanggal</label>
+            <input type="date" id="manualDate">
+          </div>
+          <div style="flex:1;">
+            <label>Shift</label>
+            <select id="manualShift">
+              <option value="">-</option>
+              <option value="A">A · Subuh</option>
+              <option value="B">B · Pagi</option>
+              <option value="C">C · Siang</option>
+              <option value="D">D · Malam</option>
+            </select>
+          </div>
+          <div style="flex:1;">
+            <label>Jam Absen</label>
+            <input type="text" id="manualTime" placeholder="cth. 08:05:00">
+          </div>
+          <div>
+            <button class="btn-in" id="btnManualAdd" style="height:43px;">Tambah Data</button>
+          </div>
+        </div>
+        <div class="status-box" id="manualStatus"></div>
+      </div>
+
+      <!-- LOG DETAIL -->
+      <div class="card">
+        <h2>Detail Absensi (Bisa Diedit)</h2>
+        <div class="filters">
+          <select id="filterHost" style="max-width:200px;"><option value="">Semua Nama</option></select>
+          <button class="btn-export" id="btnExport">Download Excel (.xlsx)</button>
+          <button class="btn-ghost" id="btnReset" style="margin-left:auto;color:var(--danger-text);border-color:var(--danger);">Hapus Semua Data</button>
+        </div>
+        <div class="schedule-scroll">
+          <table id="logTable">
+            <thead><tr><th>Nama</th><th>Tanggal</th><th>Shift</th><th>Jam Absen</th><th>Aksi</th></tr></thead>
+            <tbody id="logBody"></tbody>
+          </table>
+        </div>
+        <div class="empty" id="emptyMsg">Belum ada data absen.</div>
+      </div>
+
     </div>
 
   </div>
@@ -484,6 +577,228 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<!-- BALATRO SHADER WEBGL ENGINE -->
+<script>
+(function() {
+  const THEMES = {
+    balatro: { c1: '#DE443B', c2: '#006BB4', c3: '#162325', contrast: 3.5, lighting: 0.45, speed: 7.0 },
+    gold: { c1: '#d4af37', c2: '#693807', c3: '#120f0a', contrast: 3.4, lighting: 0.40, speed: 5.0 },
+    amethyst: { c1: '#9b30ff', c2: '#00ced1', c3: '#120d20', contrast: 3.6, lighting: 0.42, speed: 6.5 },
+    emerald: { c1: '#2e8b57', c2: '#104e2d', c3: '#09150d', contrast: 3.5, lighting: 0.38, speed: 5.5 }
+  };
+
+  let activeTheme = 'balatro';
+
+  function hexToVec4(hex) {
+    let s = hex.replace('#', '');
+    let r = parseInt(s.slice(0, 2), 16) / 255;
+    let g = parseInt(s.slice(2, 4), 16) / 255;
+    let b = parseInt(s.slice(4, 6), 16) / 255;
+    return [r, g, b, 1.0];
+  }
+
+  const canvas = document.getElementById('balatro-canvas');
+  if (!canvas) return;
+
+  const gl = canvas.getContext('webgl', { alpha: false, depth: false, antialias: false, preserveDrawingBuffer: false }) ||
+             canvas.getContext('experimental-webgl');
+
+  if (!gl) {
+    console.warn('WebGL is not supported in this environment.');
+    return;
+  }
+
+  const vsSource = `
+    attribute vec2 position;
+    varying vec2 vUv;
+    void main() {
+      vUv = (position + 1.0) * 0.5;
+      gl_Position = vec4(position, 0.0, 1.0);
+    }
+  `;
+
+  const fsSource = `
+    precision highp float;
+    #define PI 3.14159265359
+
+    uniform float iTime;
+    uniform vec3 iResolution;
+    uniform float uSpinRotation;
+    uniform float uSpinSpeed;
+    uniform vec2 uOffset;
+    uniform vec4 uColor1;
+    uniform vec4 uColor2;
+    uniform vec4 uColor3;
+    uniform float uContrast;
+    uniform float uLighting;
+    uniform float uSpinAmount;
+    uniform float uPixelFilter;
+    uniform float uSpinEase;
+    uniform bool uIsRotate;
+    uniform vec2 uMouse;
+
+    varying vec2 vUv;
+
+    vec4 effect(vec2 screenSize, vec2 screen_coords) {
+        float pixel_size = length(screenSize.xy) / uPixelFilter;
+        vec2 uv = (floor(screen_coords.xy * (1.0 / pixel_size)) * pixel_size - 0.5 * screenSize.xy) / length(screenSize.xy) - uOffset;
+        float uv_len = length(uv);
+        
+        float speed = (uSpinRotation * uSpinEase * 0.2);
+        if(uIsRotate){
+           speed = iTime * speed;
+        }
+        speed += 302.2;
+        
+        float mouseInfluence = (uMouse.x * 2.0 - 1.0);
+        speed += mouseInfluence * 0.1;
+        
+        float new_pixel_angle = atan(uv.y, uv.x) + speed - uSpinEase * 20.0 * (uSpinAmount * uv_len + (1.0 - uSpinAmount));
+        vec2 mid = (screenSize.xy / length(screenSize.xy)) / 2.0;
+        uv = (vec2(uv_len * cos(new_pixel_angle) + mid.x, uv_len * sin(new_pixel_angle) + mid.y) - mid);
+        
+        uv *= 30.0;
+        float baseSpeed = iTime * uSpinSpeed;
+        speed = baseSpeed + mouseInfluence * 2.0;
+        
+        vec2 uv2 = vec2(uv.x + uv.y);
+        
+        for(int i = 0; i < 5; i++) {
+            uv2 += sin(max(uv.x, uv.y)) + uv;
+            uv += 0.5 * vec2(
+                cos(5.1123314 + 0.353 * uv2.y + speed * 0.131121),
+                sin(uv2.x - 0.113 * speed)
+            );
+            uv -= cos(uv.x + uv.y) - sin(uv.x * 0.711 - uv.y);
+        }
+        
+        float contrast_mod = (0.25 * uContrast + 0.5 * uSpinAmount + 1.2);
+        float paint_res = min(2.0, max(0.0, length(uv) * 0.035 * contrast_mod));
+        float c1p = max(0.0, 1.0 - contrast_mod * abs(1.0 - paint_res));
+        float c2p = max(0.0, 1.0 - contrast_mod * abs(paint_res));
+        float c3p = 1.0 - min(1.0, c1p + c2p);
+        float light = (uLighting - 0.2) * max(c1p * 5.0 - 4.0, 0.0) + uLighting * max(c2p * 5.0 - 4.0, 0.0);
+        
+        return (0.3 / uContrast) * uColor1 + (1.0 - 0.3 / uContrast) * (uColor1 * c1p + uColor2 * c2p + vec4(c3p * uColor3.rgb, c3p * uColor1.a)) + light;
+    }
+
+    void main() {
+        vec2 uv = vUv * iResolution.xy;
+        gl_FragColor = effect(iResolution.xy, uv);
+    }
+  `;
+
+  function createShader(gl, type, source) {
+    const s = gl.createShader(type);
+    gl.shaderSource(s, source);
+    gl.compileShader(s);
+    if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
+      console.error(gl.getShaderInfoLog(s));
+      gl.deleteShader(s);
+      return null;
+    }
+    return s;
+  }
+
+  const vs = createShader(gl, gl.VERTEX_SHADER, vsSource);
+  const fs = createShader(gl, gl.FRAGMENT_SHADER, fsSource);
+  if (!vs || !fs) return;
+
+  const prog = gl.createProgram();
+  gl.attachShader(prog, vs);
+  gl.attachShader(prog, fs);
+  gl.linkProgram(prog);
+
+  if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
+    console.error(gl.getProgramInfoLog(prog));
+    return;
+  }
+  gl.useProgram(prog);
+
+  const quad = new Float32Array([
+    -1, -1,
+     1, -1,
+    -1,  1,
+    -1,  1,
+     1, -1,
+     1,  1,
+  ]);
+  const buf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, quad, gl.STATIC_DRAW);
+
+  const posAttr = gl.getAttribLocation(prog, 'position');
+  gl.enableVertexAttribArray(posAttr);
+  gl.vertexAttribPointer(posAttr, 2, gl.FLOAT, false, 0, 0);
+
+  const uLocs = {
+    iTime: gl.getUniformLocation(prog, 'iTime'),
+    iResolution: gl.getUniformLocation(prog, 'iResolution'),
+    uSpinRotation: gl.getUniformLocation(prog, 'uSpinRotation'),
+    uSpinSpeed: gl.getUniformLocation(prog, 'uSpinSpeed'),
+    uOffset: gl.getUniformLocation(prog, 'uOffset'),
+    uColor1: gl.getUniformLocation(prog, 'uColor1'),
+    uColor2: gl.getUniformLocation(prog, 'uColor2'),
+    uColor3: gl.getUniformLocation(prog, 'uColor3'),
+    uContrast: gl.getUniformLocation(prog, 'uContrast'),
+    uLighting: gl.getUniformLocation(prog, 'uLighting'),
+    uSpinAmount: gl.getUniformLocation(prog, 'uSpinAmount'),
+    uPixelFilter: gl.getUniformLocation(prog, 'uPixelFilter'),
+    uSpinEase: gl.getUniformLocation(prog, 'uSpinEase'),
+    uIsRotate: gl.getUniformLocation(prog, 'uIsRotate'),
+    uMouse: gl.getUniformLocation(prog, 'uMouse'),
+  };
+
+  let mousePos = [0.5, 0.5];
+  window.addEventListener('mousemove', (e) => {
+    mousePos = [e.clientX / window.innerWidth, 1.0 - (e.clientY / window.innerHeight)];
+  }, { passive: true });
+
+  function onResize() {
+    const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+    canvas.width = Math.floor(window.innerWidth * dpr);
+    canvas.height = Math.floor(window.innerHeight * dpr);
+    gl.viewport(0, 0, canvas.width, canvas.height);
+  }
+  window.addEventListener('resize', onResize);
+  onResize();
+
+  function render(now) {
+    const t = THEMES[activeTheme] || THEMES.balatro;
+    gl.useProgram(prog);
+    gl.uniform1f(uLocs.iTime, now * 0.001);
+    gl.uniform3f(uLocs.iResolution, canvas.width, canvas.height, canvas.width / canvas.height);
+    gl.uniform1f(uLocs.uSpinRotation, -2.0);
+    gl.uniform1f(uLocs.uSpinSpeed, t.speed);
+    gl.uniform2f(uLocs.uOffset, 0.0, 0.0);
+    gl.uniform4fv(uLocs.uColor1, hexToVec4(t.c1));
+    gl.uniform4fv(uLocs.uColor2, hexToVec4(t.c2));
+    gl.uniform4fv(uLocs.uColor3, hexToVec4(t.c3));
+    gl.uniform1f(uLocs.uContrast, t.contrast);
+    gl.uniform1f(uLocs.uLighting, t.lighting);
+    gl.uniform1f(uLocs.uSpinAmount, 0.25);
+    gl.uniform1f(uLocs.uPixelFilter, 700.0);
+    gl.uniform1f(uSpinEase, 1.0);
+    gl.uniform1i(uLocs.uIsRotate, 0);
+    gl.uniform2f(uLocs.uMouse, mousePos[0], mousePos[1]);
+
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
+    requestAnimationFrame(render);
+  }
+  requestAnimationFrame(render);
+
+  document.querySelectorAll('.theme-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeTheme = btn.dataset.t;
+    });
+  });
+})();
+</script>
+
+<!-- APP LOGIC -->
 <script type="module">
 // ---------- FIREBASE SETUP ----------
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -992,7 +1307,7 @@ function renderHostManageTable(log){
     return `<tr>
       <td>${idx + 1}</td>
       <td style="text-align:left;font-weight:600;color:var(--silver);">${h}</td>
-      <td><span class="shift-pill" style="background:#2b2717;border:1px solid var(--card-border);color:var(--gold-light);">Staff Host</span></td>
+      <td><span class="shift-pill" style="background:rgba(43,39,23,0.9);border:1px solid var(--card-border);color:var(--gold-light);">Staff Host</span></td>
       <td><span style="color:var(--gold-light);font-weight:600;">${totalLog}</span> absen</td>
       <td>
         <button class="btn-in btn-edit-host" data-name="${h}" style="padding:5px 10px;font-size:10.5px;margin-right:4px;">Ubah</button>
@@ -1002,7 +1317,7 @@ function renderHostManageTable(log){
   }).join('');
 
   const adminTotal = log.filter(r => r.name === ADMIN_NAME).length;
-  const adminRow = `<tr style="background:rgba(255,216,118,0.03);">
+  const adminRow = `<tr style="background:rgba(255,216,118,0.06);">
     <td>★</td>
     <td style="text-align:left;font-weight:700;color:var(--admin-gold);"><span class="name-admin">★ ${ADMIN_NAME}</span></td>
     <td><span class="shift-pill" style="background:var(--admin-gold);color:#141008;font-weight:700;">Super Admin</span></td>
