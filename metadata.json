@@ -1,0 +1,8 @@
+{
+  "name": "Modivo Staff Attendance",
+  "description": "Luxury branded employee attendance and shift management system for Modivo staff with real-time Firebase sync, attendance logging, monthly recap, and admin tools.",
+  "permissions": [],
+  "capabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
