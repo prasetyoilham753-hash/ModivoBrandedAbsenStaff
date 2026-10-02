@@ -58,42 +58,62 @@
     z-index:1;
   }
 
-  /* ---------- THEME SWITCHER BAR ---------- */
-  .theme-bar{
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    gap:8px;
-    padding:8px 16px;
-    background:rgba(10, 9, 8, 0.7);
-    backdrop-filter:blur(8px);
-    border-bottom:1px solid rgba(255,255,255,0.08);
-    font-size:11.5px;
+  /* ---------- THEME SWITCHER (MOON ICON BUTTON) ---------- */
+  .theme-menu-wrapper{
+    position:fixed;
+    top:14px;
+    right:16px;
+    z-index:100;
   }
-  .theme-btn{
-    background:rgba(255,255,255,0.06);
-    border:1px solid rgba(255,255,255,0.15);
-    color:var(--text);
-    border-radius:20px;
-    padding:4px 12px;
-    font-size:11px;
-    cursor:pointer;
-    display:inline-flex;
-    align-items:center;
-    gap:6px;
-    transition:all 0.2s ease;
-  }
-  .theme-btn.active, .theme-btn:hover{
-    background:rgba(205,167,93,0.25);
-    border-color:var(--gold);
+  .theme-toggle-btn{
+    background:rgba(18, 16, 13, 0.85);
+    border:1px solid var(--card-border);
     color:var(--gold-light);
-    transform:translateY(-1px);
-  }
-  .theme-dot{
-    width:8px;
-    height:8px;
     border-radius:50%;
-    display:inline-block;
+    width:38px;
+    height:38px;
+    padding:0;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow:0 6px 20px rgba(0,0,0,0.55);
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+    transition:all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    user-select:none;
+    -webkit-user-select:none;
+    -moz-user-select:none;
+    -ms-user-select:none;
+    -webkit-tap-highlight-color:transparent;
+    -webkit-touch-callout:none;
+    outline:none !important;
+  }
+  .theme-toggle-btn:focus,
+  .theme-toggle-btn:focus-visible,
+  .theme-toggle-btn:active{
+    outline:none !important;
+    border-color:var(--gold);
+    -webkit-tap-highlight-color:transparent;
+    box-shadow:0 8px 24px rgba(205,167,93,0.35);
+  }
+  .theme-toggle-btn:hover{
+    background:rgba(30, 26, 19, 0.95);
+    border-color:var(--gold);
+    color:var(--admin-gold);
+    transform:scale(1.08);
+    box-shadow:0 8px 24px rgba(205,167,93,0.35);
+  }
+  .theme-toggle-btn:active{
+    transform:scale(0.95);
+  }
+  .theme-moon-icon{
+    transition:transform 0.7s cubic-bezier(0.34, 1.56, 0.64, 1), stroke 0.3s ease, fill 0.3s ease;
+    stroke:var(--gold);
+    transform-origin:center;
+  }
+  .theme-toggle-btn:hover .theme-moon-icon{
+    stroke:var(--gold-light);
   }
 
   /* ---------- HEADER ---------- */
@@ -106,14 +126,58 @@
     -webkit-backdrop-filter:blur(12px);
   }
   .logo-ring{
-    width:72px;height:72px;border-radius:50%;
-    border:2px solid var(--silver);
-    display:flex;align-items:center;justify-content:center;
+    width:78px;
+    height:78px;
+    border-radius:50%;
     margin:0 auto 14px;
-    font-family:'Cormorant Garamond',serif;font-size:38px;font-weight:500;
-    color:var(--silver);
-    background:radial-gradient(circle at 35% 30%, #201d14, #0c0c0d 75%);
-    box-shadow:inset 0 0 10px rgba(255,255,255,.05), 0 0 16px rgba(255,255,255,.05);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    background:transparent;
+    filter:drop-shadow(0 6px 16px rgba(0,0,0,0.5));
+    transition:transform 0.3s ease;
+  }
+  .logo-ring:hover{
+    transform:scale(1.05);
+  }
+  /* Outer Gold Ring */
+  .logo-ring::before{
+    content:'';
+    position:absolute;
+    inset:0;
+    border-radius:50%;
+    padding:2.5px;
+    background:var(--gold-grad);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+  }
+  /* Inner Accent Gold Ring */
+  .logo-ring::after{
+    content:'';
+    position:absolute;
+    inset:5px;
+    border-radius:50%;
+    padding:1.2px;
+    background:var(--gold-grad);
+    opacity:0.85;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+  }
+  .logo-ring-text{
+    font-family:'Cormorant Garamond', Georgia, serif;
+    font-size:48px;
+    font-weight:700;
+    line-height:1;
+    margin-top:-1px;
+    background:var(--gold-grad);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    user-select:none;
+    -webkit-user-select:none;
   }
   header h1{
     margin:0;font-size:42px;font-weight:700;letter-spacing:7px;text-transform:uppercase;
@@ -189,7 +253,7 @@
   th{background:rgba(23,21,15,0.9);color:var(--gold-light);font-weight:500;letter-spacing:.5px;text-transform:uppercase;font-size:11px;}
   tr:hover td{background:rgba(255,255,255,.03);}
   td.name{text-align:left;font-weight:500;color:var(--silver);background:rgba(20,18,16,0.95);}
-  .name-admin{color:var(--admin-gold) !important;font-weight:700;text-shadow:0 0 8px rgba(255,216,118,.4);}
+  .name-admin{color:var(--silver);font-weight:500;}
 
   .hadir{color:var(--ok-text);font-weight:500;}
   .isOff{color:#565248;}
@@ -266,29 +330,19 @@
 
 <div class="app-container">
 
-  <!-- THEME PRESET SWITCHER -->
-  <div class="theme-bar">
-    <span style="color:var(--gold-dim);font-weight:500;">Balatro Shader Style:</span>
-    <button type="button" class="theme-btn active" data-t="balatro">
-      <span class="theme-dot" style="background:linear-gradient(45deg, #DE443B, #006BB4);"></span>
-      Balatro Classic (Red/Blue)
-    </button>
-    <button type="button" class="theme-btn" data-t="gold">
-      <span class="theme-dot" style="background:linear-gradient(45deg, #d4af37, #704214);"></span>
-      Modivo Luxury Gold
-    </button>
-    <button type="button" class="theme-btn" data-t="amethyst">
-      <span class="theme-dot" style="background:linear-gradient(45deg, #8a2be2, #00ced1);"></span>
-      Cyber Velvet
-    </button>
-    <button type="button" class="theme-btn" data-t="emerald">
-      <span class="theme-dot" style="background:linear-gradient(45deg, #2e8b57, #1e3f20);"></span>
-      Emerald Noir
+  <!-- DIRECT THEME TOGGLE BUTTON (MOON ICON) -->
+  <div class="theme-menu-wrapper" id="themeMenuWrapper">
+    <button type="button" class="theme-toggle-btn" id="themeToggleBtn" title="Ganti Tema Latar (Ghost Fibers / Balatro)" aria-label="Ganti Tema Latar">
+      <svg class="theme-moon-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+      </svg>
     </button>
   </div>
 
   <header>
-    <div class="logo-ring">M</div>
+    <div class="logo-ring">
+      <span class="logo-ring-text">M</span>
+    </div>
     <h1>MODIVO</h1>
     <div class="sub">Branded Attendance System</div>
     <p>Tanggal &amp; jam diambil otomatis dari sistem saat absen · tidak bisa diisi manual</p>
@@ -578,26 +632,9 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
-<!-- BALATRO SHADER WEBGL ENGINE -->
+<!-- BALATRO & GHOST FIBERS SHADER WEBGL ENGINE -->
 <script>
 (function() {
-  const THEMES = {
-    balatro: { c1: '#DE443B', c2: '#006BB4', c3: '#162325', contrast: 3.5, lighting: 0.45, speed: 7.0 },
-    gold: { c1: '#d4af37', c2: '#693807', c3: '#120f0a', contrast: 3.4, lighting: 0.40, speed: 5.0 },
-    amethyst: { c1: '#9b30ff', c2: '#00ced1', c3: '#120d20', contrast: 3.6, lighting: 0.42, speed: 6.5 },
-    emerald: { c1: '#2e8b57', c2: '#104e2d', c3: '#09150d', contrast: 3.5, lighting: 0.38, speed: 5.5 }
-  };
-
-  let activeTheme = 'balatro';
-
-  function hexToVec4(hex) {
-    let s = hex.replace('#', '');
-    let r = parseInt(s.slice(0, 2), 16) / 255;
-    let g = parseInt(s.slice(2, 4), 16) / 255;
-    let b = parseInt(s.slice(4, 6), 16) / 255;
-    return [r, g, b, 1.0];
-  }
-
   const canvas = document.getElementById('balatro-canvas');
   if (!canvas) return;
 
@@ -609,7 +646,47 @@
     return;
   }
 
-  const vsSource = `
+  function hexToRgb(hex) {
+    let s = hex.trim().replace(/^#/, '');
+    if (s.length === 3) s = s.split('').map(c => c + c).join('');
+    const num = parseInt(s, 16);
+    return [((num >> 16) & 255) / 255, ((num >> 8) & 255) / 255, (num & 255) / 255];
+  }
+
+  function hexToVec4(hex) {
+    const rgb = hexToRgb(hex);
+    return [rgb[0], rgb[1], rgb[2], 1.0];
+  }
+
+  function createShader(gl, type, source) {
+    const s = gl.createShader(type);
+    gl.shaderSource(s, source);
+    gl.compileShader(s);
+    if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
+      console.error(gl.getShaderInfoLog(s));
+      gl.deleteShader(s);
+      return null;
+    }
+    return s;
+  }
+
+  function createProgram(vsSource, fsSource) {
+    const vs = createShader(gl, gl.VERTEX_SHADER, vsSource);
+    const fs = createShader(gl, gl.FRAGMENT_SHADER, fsSource);
+    if (!vs || !fs) return null;
+    const p = gl.createProgram();
+    gl.attachShader(p, vs);
+    gl.attachShader(p, fs);
+    gl.linkProgram(p);
+    if (!gl.getProgramParameter(p, gl.LINK_STATUS)) {
+      console.error(gl.getProgramInfoLog(p));
+      return null;
+    }
+    return p;
+  }
+
+  // Common Vertex Shader
+  const commonVs = `
     attribute vec2 position;
     varying vec2 vUv;
     void main() {
@@ -618,7 +695,8 @@
     }
   `;
 
-  const fsSource = `
+  // Balatro Fragment Shader
+  const balatroFs = `
     precision highp float;
     #define PI 3.14159265359
 
@@ -637,6 +715,7 @@
     uniform float uSpinEase;
     uniform bool uIsRotate;
     uniform vec2 uMouse;
+    uniform float uAlpha;
 
     varying vec2 vUv;
 
@@ -685,36 +764,136 @@
 
     void main() {
         vec2 uv = vUv * iResolution.xy;
-        gl_FragColor = effect(iResolution.xy, uv);
+        vec4 col = effect(iResolution.xy, uv);
+        gl_FragColor = vec4(col.rgb, uAlpha);
     }
   `;
 
-  function createShader(gl, type, source) {
-    const s = gl.createShader(type);
-    gl.shaderSource(s, source);
-    gl.compileShader(s);
-    if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
-      console.error(gl.getShaderInfoLog(s));
-      gl.deleteShader(s);
-      return null;
+  // Ghost Fibers Fragment Shader (React Bits)
+  const ghostFibersFs = `
+    precision highp float;
+
+    uniform vec2 uResolution;
+    uniform float uTime;
+    uniform float uSpeed;
+    uniform float uScale;
+    uniform float uRotation;
+    uniform float uLayers;
+    uniform float uWaveAmplitude;
+    uniform float uWaveFrequency;
+    uniform float uWaveSpeed;
+    uniform float uLayerSpeed;
+    uniform float uTwist;
+    uniform float uTwistFrequency;
+    uniform float uTwistSpeed;
+    uniform float uLineFrequency;
+    uniform float uLineSpacing;
+    uniform float uLineSharpness;
+    uniform float uGlowFalloff;
+    uniform float uGlowIntensity;
+    uniform float uBrightness;
+    uniform float uBlueBoost;
+    uniform float uVignette;
+    uniform float uGrain;
+    uniform float uRotationSpeed;
+    uniform float uLightMode;
+    uniform vec3 uLineColor;
+    uniform vec3 uGlowColor;
+    uniform float uAlpha;
+
+    #define MAX_LAYERS 10
+
+    mat2 rotate2d(float angle) {
+      float sine = sin(angle);
+      float cosine = cos(angle);
+      return mat2(cosine, -sine, sine, cosine);
     }
-    return s;
-  }
 
-  const vs = createShader(gl, gl.VERTEX_SHADER, vsSource);
-  const fs = createShader(gl, gl.FRAGMENT_SHADER, fsSource);
-  if (!vs || !fs) return;
+    float grainHash(vec2 point) {
+      point = floor(point);
+      float hash = 52.9829189 * fract(dot(point, vec2(0.065, 0.005)));
+      return fract(hash);
+    }
 
-  const prog = gl.createProgram();
-  gl.attachShader(prog, vs);
-  gl.attachShader(prog, fs);
-  gl.linkProgram(prog);
+    float layeredGrain(vec2 fragmentPixel) {
+      vec2 point = mod(fragmentPixel + vec2(uTime * 30.0, -uTime * 21.0), 1024.0);
+      vec2 rotated = mat2(0.8, -0.5, 0.5, 0.8) * point;
+      float grain = 0.0;
+      grain += 0.40 * grainHash(rotated);
+      grain += 0.25 * grainHash(rotated * 2.0 + 17.0);
+      grain += 0.20 * grainHash(rotated * 4.0 + 47.0);
+      grain += 0.10 * grainHash(rotated * 8.0 + 113.0);
+      grain += 0.05 * grainHash(rotated * 16.0 + 191.0);
+      return grain;
+    }
 
-  if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
-    console.error(gl.getProgramInfoLog(prog));
-    return;
-  }
-  gl.useProgram(prog);
+    void main() {
+      vec2 resolution = max(uResolution, vec2(1.0));
+      vec2 uv = (2.0 * gl_FragCoord.xy - resolution) / resolution.y;
+      float time = uTime * uSpeed;
+      vec3 backdrop = mix(vec3(0.070588, 0.058824, 0.090196), vec3(1.0), step(0.5, uLightMode));
+      vec3 centerTone = max(uLineColor * 0.85567 - uGlowColor * 0.06186, vec3(0.0));
+      vec3 cloudTone = uLineColor * 0.19588 + uGlowColor * 0.2268;
+      vec2 p = uv;
+      p /= max(uScale, 0.05);
+      p = rotate2d(radians(uRotation) + time * uRotationSpeed) * p;
+      vec3 color = vec3(0.0);
+      float fiberField = 0.0;
+
+      for (int index = 0; index < MAX_LAYERS; index++) {
+        float fi = float(index) + 1.0;
+        if (fi > uLayers) break;
+
+        p += uWaveAmplitude * sin(p.yx * fi * uWaveFrequency + time * (uWaveSpeed + fi * uLayerSpeed));
+
+        float radius = length(p);
+        float polarAngle = atan(p.y, p.x);
+        polarAngle += sin(radius * uTwistFrequency - time * uTwistSpeed + fi) * uTwist;
+        p = vec2(cos(polarAngle), sin(polarAngle)) * radius;
+
+        float lines = abs(sin(p.x * (uLineFrequency + fi * uLineSpacing) + sin(p.y * 3.0 + time)));
+        lines = pow(max(0.0, 1.0 - lines), uLineSharpness);
+        fiberField += lines / fi;
+        color += uLineColor * lines / fi;
+
+        float glow = exp(-uGlowFalloff * abs(sin(p.x * 3.0 + time + fi)));
+        color += uGlowColor * glow * uGlowIntensity / (fi * 2.0);
+      }
+
+      float center = exp(-2.2 * dot(uv, uv));
+      color += centerTone * center;
+
+      float cloud = exp(-1.5 * length(uv + vec2(sin(time * 0.3) * 0.25, cos(time * 0.25) * 0.18)));
+      color += cloudTone * cloud;
+
+      float vignette = 1.0 - smoothstep(0.35, 1.45, length(uv));
+      color *= mix(1.0 - uVignette, 1.0, vignette);
+      color = 1.0 - exp(-color * uBrightness);
+      color.b *= uBlueBoost;
+
+      vec3 outputColor;
+      if (uLightMode > 0.5) {
+        float edgeFade = mix(1.0 - uVignette, 1.0, vignette);
+        float fibers = pow(smoothstep(0.12, 1.05, fiberField) * edgeFade, 1.5);
+        float atmosphere = (center * 0.025 + cloud * 0.015) * edgeFade;
+        vec3 fiberInk = mix(backdrop, uLineColor, 0.52);
+        vec3 airColor = mix(backdrop, uGlowColor, 0.16);
+
+        outputColor = mix(backdrop, airColor, atmosphere);
+        outputColor = mix(outputColor, fiberInk, fibers * 0.3);
+      } else {
+        outputColor = backdrop + color;
+      }
+
+      float noise = (layeredGrain(gl_FragCoord.xy) - 0.5) * uGrain;
+      outputColor = clamp(outputColor + noise, 0.0, 1.0);
+      gl_FragColor = vec4(outputColor, uAlpha);
+    }
+  `;
+
+  const progBalatro = createProgram(commonVs, balatroFs);
+  const progGhost = createProgram(commonVs, ghostFibersFs);
+  if (!progBalatro || !progGhost) return;
 
   const quad = new Float32Array([
     -1, -1,
@@ -728,29 +907,63 @@
   gl.bindBuffer(gl.ARRAY_BUFFER, buf);
   gl.bufferData(gl.ARRAY_BUFFER, quad, gl.STATIC_DRAW);
 
-  const posAttr = gl.getAttribLocation(prog, 'position');
-  gl.enableVertexAttribArray(posAttr);
-  gl.vertexAttribPointer(posAttr, 2, gl.FLOAT, false, 0, 0);
+  const balatroPosAttr = gl.getAttribLocation(progBalatro, 'position');
+  const ghostPosAttr = gl.getAttribLocation(progGhost, 'position');
 
-  const uLocs = {
-    iTime: gl.getUniformLocation(prog, 'iTime'),
-    iResolution: gl.getUniformLocation(prog, 'iResolution'),
-    uSpinRotation: gl.getUniformLocation(prog, 'uSpinRotation'),
-    uSpinSpeed: gl.getUniformLocation(prog, 'uSpinSpeed'),
-    uOffset: gl.getUniformLocation(prog, 'uOffset'),
-    uColor1: gl.getUniformLocation(prog, 'uColor1'),
-    uColor2: gl.getUniformLocation(prog, 'uColor2'),
-    uColor3: gl.getUniformLocation(prog, 'uColor3'),
-    uContrast: gl.getUniformLocation(prog, 'uContrast'),
-    uLighting: gl.getUniformLocation(prog, 'uLighting'),
-    uSpinAmount: gl.getUniformLocation(prog, 'uSpinAmount'),
-    uPixelFilter: gl.getUniformLocation(prog, 'uPixelFilter'),
-    uSpinEase: gl.getUniformLocation(prog, 'uSpinEase'),
-    uIsRotate: gl.getUniformLocation(prog, 'uIsRotate'),
-    uMouse: gl.getUniformLocation(prog, 'uMouse'),
+  const uBalatro = {
+    iTime: gl.getUniformLocation(progBalatro, 'iTime'),
+    iResolution: gl.getUniformLocation(progBalatro, 'iResolution'),
+    uSpinRotation: gl.getUniformLocation(progBalatro, 'uSpinRotation'),
+    uSpinSpeed: gl.getUniformLocation(progBalatro, 'uSpinSpeed'),
+    uOffset: gl.getUniformLocation(progBalatro, 'uOffset'),
+    uColor1: gl.getUniformLocation(progBalatro, 'uColor1'),
+    uColor2: gl.getUniformLocation(progBalatro, 'uColor2'),
+    uColor3: gl.getUniformLocation(progBalatro, 'uColor3'),
+    uContrast: gl.getUniformLocation(progBalatro, 'uContrast'),
+    uLighting: gl.getUniformLocation(progBalatro, 'uLighting'),
+    uSpinAmount: gl.getUniformLocation(progBalatro, 'uSpinAmount'),
+    uPixelFilter: gl.getUniformLocation(progBalatro, 'uPixelFilter'),
+    uSpinEase: gl.getUniformLocation(progBalatro, 'uSpinEase'),
+    uIsRotate: gl.getUniformLocation(progBalatro, 'uIsRotate'),
+    uMouse: gl.getUniformLocation(progBalatro, 'uMouse'),
+    uAlpha: gl.getUniformLocation(progBalatro, 'uAlpha'),
   };
 
+  const uGhost = {
+    uResolution: gl.getUniformLocation(progGhost, 'uResolution'),
+    uTime: gl.getUniformLocation(progGhost, 'uTime'),
+    uSpeed: gl.getUniformLocation(progGhost, 'uSpeed'),
+    uScale: gl.getUniformLocation(progGhost, 'uScale'),
+    uRotation: gl.getUniformLocation(progGhost, 'uRotation'),
+    uLayers: gl.getUniformLocation(progGhost, 'uLayers'),
+    uWaveAmplitude: gl.getUniformLocation(progGhost, 'uWaveAmplitude'),
+    uWaveFrequency: gl.getUniformLocation(progGhost, 'uWaveFrequency'),
+    uWaveSpeed: gl.getUniformLocation(progGhost, 'uWaveSpeed'),
+    uLayerSpeed: gl.getUniformLocation(progGhost, 'uLayerSpeed'),
+    uTwist: gl.getUniformLocation(progGhost, 'uTwist'),
+    uTwistFrequency: gl.getUniformLocation(progGhost, 'uTwistFrequency'),
+    uTwistSpeed: gl.getUniformLocation(progGhost, 'uTwistSpeed'),
+    uLineFrequency: gl.getUniformLocation(progGhost, 'uLineFrequency'),
+    uLineSpacing: gl.getUniformLocation(progGhost, 'uLineSpacing'),
+    uLineSharpness: gl.getUniformLocation(progGhost, 'uLineSharpness'),
+    uGlowFalloff: gl.getUniformLocation(progGhost, 'uGlowFalloff'),
+    uGlowIntensity: gl.getUniformLocation(progGhost, 'uGlowIntensity'),
+    uBrightness: gl.getUniformLocation(progGhost, 'uBrightness'),
+    uBlueBoost: gl.getUniformLocation(progGhost, 'uBlueBoost'),
+    uVignette: gl.getUniformLocation(progGhost, 'uVignette'),
+    uGrain: gl.getUniformLocation(progGhost, 'uGrain'),
+    uRotationSpeed: gl.getUniformLocation(progGhost, 'uRotationSpeed'),
+    uLightMode: gl.getUniformLocation(progGhost, 'uLightMode'),
+    uLineColor: gl.getUniformLocation(progGhost, 'uLineColor'),
+    uGlowColor: gl.getUniformLocation(progGhost, 'uGlowColor'),
+    uAlpha: gl.getUniformLocation(progGhost, 'uAlpha'),
+  };
+
+  let activeTheme = 'ghostfibers';
+  let targetBlend = 0.0; // 0.0 = ghostfibers, 1.0 = balatro
+  let themeBlend = 0.0;
   let mousePos = [0.5, 0.5];
+
   window.addEventListener('mousemove', (e) => {
     mousePos = [e.clientX / window.innerWidth, 1.0 - (e.clientY / window.innerHeight)];
   }, { passive: true });
@@ -764,37 +977,142 @@
   window.addEventListener('resize', onResize);
   onResize();
 
-  function render(now) {
-    const t = THEMES[activeTheme] || THEMES.balatro;
-    gl.useProgram(prog);
-    gl.uniform1f(uLocs.iTime, now * 0.001);
-    gl.uniform3f(uLocs.iResolution, canvas.width, canvas.height, canvas.width / canvas.height);
-    gl.uniform1f(uLocs.uSpinRotation, -2.0);
-    gl.uniform1f(uLocs.uSpinSpeed, t.speed);
-    gl.uniform2f(uLocs.uOffset, 0.0, 0.0);
-    gl.uniform4fv(uLocs.uColor1, hexToVec4(t.c1));
-    gl.uniform4fv(uLocs.uColor2, hexToVec4(t.c2));
-    gl.uniform4fv(uLocs.uColor3, hexToVec4(t.c3));
-    gl.uniform1f(uLocs.uContrast, t.contrast);
-    gl.uniform1f(uLocs.uLighting, t.lighting);
-    gl.uniform1f(uLocs.uSpinAmount, 0.25);
-    gl.uniform1f(uLocs.uPixelFilter, 700.0);
-    gl.uniform1f(uLocs.uSpinEase, 1.0);
-    gl.uniform1i(uLocs.uIsRotate, 0);
-    gl.uniform2f(uLocs.uMouse, mousePos[0], mousePos[1]);
+  // Enable WebGL alpha blending for smooth crossfade mix transition
+  gl.enable(gl.BLEND);
+  gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
-    gl.drawArrays(gl.TRIANGLES, 0, 6);
+  function render(now) {
+    const timeInSeconds = now * 0.001;
+
+    // Smoothly interpolate themeBlend towards targetBlend over time (~0.8s mix)
+    if (Math.abs(targetBlend - themeBlend) > 0.001) {
+      themeBlend += (targetBlend - themeBlend) * 0.06;
+    } else {
+      themeBlend = targetBlend;
+    }
+
+    gl.clearColor(0.03, 0.03, 0.03, 1.0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+
+    // Render Ghost Fibers if blend alpha > 0
+    if (themeBlend < 0.999) {
+      const alphaGhost = 1.0 - themeBlend;
+      gl.useProgram(progGhost);
+      gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+      gl.enableVertexAttribArray(ghostPosAttr);
+      gl.vertexAttribPointer(ghostPosAttr, 2, gl.FLOAT, false, 0, 0);
+
+      gl.uniform2f(uGhost.uResolution, canvas.width, canvas.height);
+      gl.uniform1f(uGhost.uTime, timeInSeconds);
+      gl.uniform1f(uGhost.uSpeed, 0.79);
+      gl.uniform1f(uGhost.uScale, 2.0);
+      gl.uniform1f(uGhost.uRotation, -27.0);
+      gl.uniform1f(uGhost.uRotationSpeed, 0.14);
+      gl.uniform1f(uGhost.uLayers, 4.0);
+      gl.uniform1f(uGhost.uWaveAmplitude, 0.05);
+      gl.uniform1f(uGhost.uWaveFrequency, 3.75);
+      gl.uniform1f(uGhost.uWaveSpeed, 0.15);
+      gl.uniform1f(uGhost.uLayerSpeed, 0.08);
+      gl.uniform1f(uGhost.uTwist, 0.17);
+      gl.uniform1f(uGhost.uTwistFrequency, 5.0);
+      gl.uniform1f(uGhost.uTwistSpeed, 1.2);
+      gl.uniform1f(uGhost.uLineFrequency, 3.7);
+      gl.uniform1f(uGhost.uLineSpacing, 2.0);
+      gl.uniform1f(uGhost.uLineSharpness, 16.0);
+      gl.uniform1f(uGhost.uGlowFalloff, 8.75);
+      gl.uniform1f(uGhost.uGlowIntensity, 2.15);
+      gl.uniform1f(uGhost.uBrightness, 2.65);
+      gl.uniform1f(uGhost.uBlueBoost, 1.25);
+      gl.uniform1f(uGhost.uVignette, 0.85);
+      gl.uniform1f(uGhost.uGrain, 0.05);
+      gl.uniform1f(uGhost.uLightMode, 0.0);
+      gl.uniform3fv(uGhost.uLineColor, hexToRgb('#9f6627'));
+      gl.uniform3fv(uGhost.uGlowColor, hexToRgb('#a09534'));
+      gl.uniform1f(uGhost.uAlpha, alphaGhost);
+
+      gl.drawArrays(gl.TRIANGLES, 0, 6);
+    }
+
+    // Render Balatro if blend alpha > 0
+    if (themeBlend > 0.001) {
+      gl.useProgram(progBalatro);
+      gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+      gl.enableVertexAttribArray(balatroPosAttr);
+      gl.vertexAttribPointer(balatroPosAttr, 2, gl.FLOAT, false, 0, 0);
+
+      gl.uniform1f(uBalatro.iTime, timeInSeconds);
+      gl.uniform3f(uBalatro.iResolution, canvas.width, canvas.height, canvas.width / canvas.height);
+      gl.uniform1f(uBalatro.uSpinRotation, -2.0);
+      gl.uniform1f(uBalatro.uSpinSpeed, 7.0);
+      gl.uniform2f(uBalatro.uOffset, 0.0, 0.0);
+      gl.uniform4fv(uBalatro.uColor1, hexToVec4('#DE443B'));
+      gl.uniform4fv(uBalatro.uColor2, hexToVec4('#006BB4'));
+      gl.uniform4fv(uBalatro.uColor3, hexToVec4('#162325'));
+      gl.uniform1f(uBalatro.uContrast, 3.5);
+      gl.uniform1f(uBalatro.uLighting, 0.45);
+      gl.uniform1f(uBalatro.uSpinAmount, 0.25);
+      gl.uniform1f(uBalatro.uPixelFilter, 700.0);
+      gl.uniform1f(uBalatro.uSpinEase, 1.0);
+      gl.uniform1i(uBalatro.uIsRotate, 0);
+      gl.uniform2f(uBalatro.uMouse, mousePos[0], mousePos[1]);
+      gl.uniform1f(uBalatro.uAlpha, themeBlend);
+
+      gl.drawArrays(gl.TRIANGLES, 0, 6);
+    }
+
     requestAnimationFrame(render);
   }
   requestAnimationFrame(render);
 
-  document.querySelectorAll('.theme-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      activeTheme = btn.dataset.t;
+  const toggleBtn = document.getElementById('themeToggleBtn');
+
+  function applyTheme(themeKey, save = true) {
+    if (themeKey !== 'balatro' && themeKey !== 'ghostfibers') {
+      themeKey = 'ghostfibers';
+    }
+    activeTheme = themeKey;
+    targetBlend = (themeKey === 'balatro') ? 1.0 : 0.0;
+
+    if (save) {
+      try { localStorage.setItem('modivo_bg_theme', themeKey); } catch(e){}
+    }
+    if (toggleBtn) {
+      const nextThemeName = (themeKey === 'ghostfibers') ? 'Balatro Classic' : 'Ghost Fibers';
+      const curThemeName = (themeKey === 'ghostfibers') ? 'Ghost Fibers (Utama)' : 'Balatro Classic';
+      toggleBtn.title = `Tema Aktif: ${curThemeName} (Klik untuk beralih ke ${nextThemeName})`;
+    }
+  }
+
+  // Load saved preference (Default to Ghost Fibers)
+  try {
+    const savedTheme = localStorage.getItem('modivo_bg_theme');
+    if (savedTheme === 'ghostfibers' || savedTheme === 'balatro') {
+      applyTheme(savedTheme, false);
+      themeBlend = targetBlend; // snap on initial load
+    } else {
+      applyTheme('ghostfibers', false);
+      themeBlend = 0.0;
+    }
+  } catch(e){
+    applyTheme('ghostfibers', false);
+    themeBlend = 0.0;
+  }
+
+  let moonRotation = 0;
+  if (toggleBtn) {
+    const moonIcon = toggleBtn.querySelector('.theme-moon-icon');
+    toggleBtn.addEventListener('contextmenu', (e) => e.preventDefault());
+    toggleBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      moonRotation += 360;
+      if (moonIcon) {
+        moonIcon.style.transform = `rotate(${moonRotation}deg)`;
+      }
+      const nextTheme = (activeTheme === 'ghostfibers') ? 'balatro' : 'ghostfibers';
+      applyTheme(nextTheme, true);
     });
-  });
+  }
 })();
 </script>
 
@@ -822,7 +1140,7 @@ const LOG_DOC = doc(db, 'absensi', 'log');
 const SETTINGS_DOC = doc(db, 'absensi', 'settings');
 
 const DEFAULT_HOSTS = ['Ali', 'Mala', 'Sisil', 'Amat'];
-const ADMIN_NAME = 'Bintang (admin)';
+const ADMIN_NAME = 'Bintang';
 let HOSTS = [...DEFAULT_HOSTS];
 let NAMES = [...HOSTS, ADMIN_NAME];
 
@@ -1052,16 +1370,15 @@ function calendarHtml(dates, recMap){
   </div>`;
 }
 
-// ---------- HELPER: TAMPILAN NAMA ADMIN MENCOLOK ----------
-function isAdminName(n){ return n === ADMIN_NAME; }
-function optionLabel(n){ return isAdminName(n) ? '★ ' + n : n; }
+// ---------- HELPER: TAMPILAN NAMA ADMIN KONSISTEN ----------
+function isAdminName(n){ return n === 'Bintang' || (n && n.toLowerCase().includes('bintang')); }
+function optionLabel(n){ return n; }
 function optionHtml(n, selected){
-  const style = isAdminName(n) ? ' style="color:#ffd876;font-weight:700;"' : '';
   const sel = selected ? ' selected' : '';
-  return `<option value="${n}"${style}${sel}>${optionLabel(n)}</option>`;
+  return `<option value="${n}"${sel}>${optionLabel(n)}</option>`;
 }
 function nameCellHtml(n){
-  return isAdminName(n) ? `<span class="name-admin">★ ${n}</span>` : n;
+  return isAdminName(n) ? `<span class="name-admin">${n}</span>` : n;
 }
 
 // ---------- SETUP & UPDATE DROPDOWNS ----------
@@ -1316,12 +1633,12 @@ function renderHostManageTable(log){
     </tr>`;
   }).join('');
 
-  const adminTotal = log.filter(r => r.name === ADMIN_NAME).length;
-  const adminRow = `<tr style="background:rgba(255,216,118,0.06);">
-    <td>★</td>
-    <td style="text-align:left;font-weight:700;color:var(--admin-gold);"><span class="name-admin">★ ${ADMIN_NAME}</span></td>
-    <td><span class="shift-pill" style="background:var(--admin-gold);color:#141008;font-weight:700;">Super Admin</span></td>
-    <td><span style="color:var(--gold-light);font-weight:600;">${adminTotal}</span> absen</td>
+  const adminTotal = log.filter(r => isAdminName(r.name)).length;
+  const adminRow = `<tr>
+    <td>#</td>
+    <td style="text-align:left;"><span class="name-admin">Bintang</span></td>
+    <td><span class="shift-pill" style="background:var(--card-border);color:var(--text);font-weight:500;">Super Admin</span></td>
+    <td><span>${adminTotal}</span> absen</td>
     <td><span style="color:var(--text-muted);font-size:11px;font-style:italic;">Sistem / Terkunci</span></td>
   </tr>`;
 
@@ -1427,7 +1744,7 @@ let editingCell = null;
 
 function openCellEditModal(name, date){
   editingCell = { name, date };
-  document.getElementById('cellEditTitle').textContent = isAdminName(name) ? '★ ' + name : name;
+  document.getElementById('cellEditTitle').textContent = name;
   document.getElementById('cellEditSub').textContent = `Tanggal ${date} — pilih status baru untuk hari ini`;
   document.getElementById('cellEditModal').classList.remove('hidden');
 }
@@ -1478,7 +1795,7 @@ function renderLogTable(log){
     const nameOptions = NAMES.map(n=>optionHtml(n, n===r.name)).join('');
     const shiftOptions = ['','A','B','C','D'].map(s=>`<option value="${s}" ${s===(r.shift||'')?'selected':''}>${s||'-'}</option>`).join('');
     return `<tr data-id="${r.id}">
-      <td>${isAdminName(r.name) ? '<select class="edit-input edit-name" style="color:#ffd876;font-weight:700;">' : '<select class="edit-input edit-name">'}${nameOptions}</select></td>
+      <td><select class="edit-input edit-name">${nameOptions}</select></td>
       <td><input type="date" class="edit-input edit-date" value="${r.date}"></td>
       <td><select class="edit-input edit-shift">${shiftOptions}</select></td>
       <td><input type="text" class="edit-input edit-time" value="${r.jamAbsen}"></td>
